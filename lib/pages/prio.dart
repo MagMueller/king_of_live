@@ -17,7 +17,21 @@ class _PrioPageState extends State<PrioPage> {
 
     Items mag = Items(name: "Magnus Müller", prio: 1);
     Items joh = new Items(name: "Johanna Müller", prio: 2);
-    users = [mag, joh, new Items(name: "Johanna Müller", prio: 2), new Items(name: "Johanna Müller", prio: 2),new Items(name: "Johanna Müller", prio: 2), new Items(name: "Johanna Müller", prio: 2), new Items(name: "Johanna Müller", prio: 2),new Items(name: "Johanna Müller", prio: 2), new Items(name: "Johanna Müller", prio: 2),new Items(name: "Johanna Müller", prio: 2),new Items(name: "Johanna Müller", prio: 2),new Items(name: "Johanna Müller", prio: 2),new Items(name: "Johanna Müller", prio: 2)];
+    users = [
+      mag,
+      joh,
+      new Items(name: "Johanna Müller", prio: 2),
+      new Items(name: "Johanna Müller", prio: 2),
+      new Items(name: "Johanna Müller", prio: 2),
+      new Items(name: "Johanna Müller", prio: 2),
+      new Items(name: "Johanna Müller", prio: 2),
+      new Items(name: "Johanna Müller", prio: 2),
+      new Items(name: "Johanna Müller", prio: 2),
+      new Items(name: "Johanna Müller", prio: 2),
+      new Items(name: "Johanna Müller", prio: 2),
+      new Items(name: "Johanna Müller", prio: 2),
+      new Items(name: "Johanna Müller", prio: 2)
+    ];
   }
 
   @override
@@ -42,15 +56,13 @@ class _PrioPageState extends State<PrioPage> {
             return buildUser(index, user, Colors.yellow, 6.0);
           },
         ),
-
         floatingActionButton: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             FloatingActionButton(
                 onPressed: () => _displayDialog(),
                 tooltip: 'Add Item',
-                child: Icon(Icons.add)
-            ),
+                child: Icon(Icons.add)),
             FloatingActionButton(
               child: Icon(Icons.shuffle),
               onPressed: orderList,
@@ -63,41 +75,33 @@ class _PrioPageState extends State<PrioPage> {
       ListTile(
         key: ValueKey(user),
         contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        tileColor: setColor(user.prio, user.done),
+        tileColor: get_my_color(user.prio, user.done),
         title: Text(user.name),
         trailing: Row(
           //mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             //Text(user.prio),
-            ToggleButtons(
-                children: <Widget>[
-                  // first toggle button
-                  Text('A',
-                      style: TextStyle(
-                        fontSize: 25,
-                      )),
-                  // second toggle button
-                  Text('B',
-                      style: TextStyle(
-                        fontSize: 25,
-                      )),
-                  // third toggle button
-                  Text('C',
-                      style: TextStyle(
-                        fontSize: 25,
-                      )),
-                ],
-                // logic for button selection below
-                onPressed: (int index) {
-                  setState(() {
-                    user.prio = index + 1;
-                  });
-                },
-                selectedColor: Colors.blue,
-                borderRadius: BorderRadius.circular(10),
-                borderWidth: 3,
-                isSelected: [1 == user.prio, 2 == user.prio, 3 == user.prio]),
+            ElevatedButton(
+              style: ButtonStyle(
+                minimumSize:MaterialStateProperty.resolveWith((states) => Size(1, 40)) ,
+                backgroundColor: MaterialStateProperty.resolveWith((states) => get_my_color(user.prio, user.done)),
+                //backgroundColor: get_my_color(user.prio, user.done),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(700.0),
+                          side: BorderSide(color: Colors.black, width: 3.0)))),
+              child: Text(get_prio_text(user.prio), style: TextStyle(color: Colors.black),),
+              onPressed: () {
+                setState(() {
+                  if (user.prio == 3){
+                    user.prio = 1;
+
+                  }else{user.prio += 1;}
+                });
+              },
+            ),
+
             IconButton(
               iconSize: 22,
               icon: Icon(Icons.edit, color: Colors.black),
@@ -108,7 +112,8 @@ class _PrioPageState extends State<PrioPage> {
               onPressed: () => remove(index),
             ),
             IconButton(
-              icon: Icon(Icons.done_outline, color: !user.done  ? Colors.green : Colors.black),
+              icon: Icon(Icons.done_outline,
+                  color: !user.done ? Colors.green : Colors.black),
               onPressed: () => done(index),
             ),
           ],
@@ -148,7 +153,7 @@ class _PrioPageState extends State<PrioPage> {
         users = [...prio_A, ...prio_B, ...prio_C];
       });
 
-  Color setColor(int prio, bool done) {
+  Color get_my_color(int prio, bool done) {
     if (done) {
       return Colors.green;
     } else if (prio == 1) {
@@ -161,9 +166,17 @@ class _PrioPageState extends State<PrioPage> {
       return Colors.pink;
   }
 
+  String get_prio_text(int prio) {
+    List<String> prios = ["A", "B", "C"];
+    if (prio <= 3 && prio >= 1) {
+      return prios[prio - 1];
+    } else {
+      return "Error";
+    }
+  }
+
   _addTodoItem(String name) =>
       setState(() => users.add(Items(name: name, prio: 3)));
-
 
   Future<void> _displayDialog() async {
     return showDialog<void>(
