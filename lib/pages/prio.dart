@@ -57,12 +57,18 @@ class _PrioPageState extends State<PrioPage> {
           },
         ),
         floatingActionButton: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             FloatingActionButton(
-                onPressed: () => _displayDialog(),
-                tooltip: 'Add Item',
-                child: Icon(Icons.add)),
+                onPressed: () => delete_all_items(), child: Icon(Icons.delete_sharp)),
+            Container(
+              height: 80.0,
+              width: 80.0,
+              child: FloatingActionButton(
+                  onPressed: () => _displayDialog(),
+                  tooltip: 'Add Item',
+                  child: Icon(Icons.add)),
+            ),
             FloatingActionButton(
               child: Icon(Icons.shuffle),
               onPressed: orderList,
@@ -84,20 +90,26 @@ class _PrioPageState extends State<PrioPage> {
             //Text(user.prio),
             ElevatedButton(
               style: ButtonStyle(
-                minimumSize:MaterialStateProperty.resolveWith((states) => Size(1, 40)) ,
-                backgroundColor: MaterialStateProperty.resolveWith((states) => get_my_color(user.prio, user.done)),
-                //backgroundColor: get_my_color(user.prio, user.done),
+                  minimumSize: MaterialStateProperty.resolveWith(
+                      (states) => Size(1, 40)),
+                  backgroundColor: MaterialStateProperty.resolveWith(
+                      (states) => get_my_color(user.prio, user.done)),
+                  //backgroundColor: get_my_color(user.prio, user.done),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(700.0),
                           side: BorderSide(color: Colors.black, width: 3.0)))),
-              child: Text(get_prio_text(user.prio), style: TextStyle(color: Colors.black),),
+              child: Text(
+                get_prio_text(user.prio),
+                style: TextStyle(color: Colors.black),
+              ),
               onPressed: () {
                 setState(() {
-                  if (user.prio == 3){
+                  if (user.prio == 3) {
                     user.prio = 1;
-
-                  }else{user.prio += 1;}
+                  } else {
+                    user.prio += 1;
+                  }
                 });
               },
             ),
@@ -207,5 +219,9 @@ class _PrioPageState extends State<PrioPage> {
     setState(() {
       users[index].done = !users[index].done;
     });
+  }
+
+  delete_all_items() {
+    users = [];
   }
 }
