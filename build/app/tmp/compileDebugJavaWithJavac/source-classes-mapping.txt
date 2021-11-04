@@ -1,0 +1,4 @@
+io/flutter/plugins/GeneratedPluginRegistrant.java
+ io.flutter.plugins.GeneratedPluginRegistrant
+de/king_of_live/BuildConfig.java
+ de.king_of_live.BuildConfig
