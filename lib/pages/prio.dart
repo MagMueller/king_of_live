@@ -22,15 +22,6 @@ class _PrioPageState extends State<PrioPage> {
       joh,
       new Items(name: "Johanna Müller", prio: 2),
       new Items(name: "Johanna Müller", prio: 2),
-      new Items(name: "Johanna Müller", prio: 2),
-      new Items(name: "Johanna Müller", prio: 2),
-      new Items(name: "Johanna Müller", prio: 2),
-      new Items(name: "Johanna Müller", prio: 2),
-      new Items(name: "Johanna Müller", prio: 2),
-      new Items(name: "Johanna Müller", prio: 2),
-      new Items(name: "Johanna Müller", prio: 2),
-      new Items(name: "Johanna Müller", prio: 2),
-      new Items(name: "Johanna Müller", prio: 2)
     ];
   }
 
@@ -42,7 +33,7 @@ class _PrioPageState extends State<PrioPage> {
         ),
         body: ReorderableListView.builder(
           shrinkWrap: true,
-          padding: const EdgeInsets.symmetric(horizontal: 4),
+          //padding: const EdgeInsets.symmetric(horizontal: 4),
           itemCount: users.length,
           onReorder: (oldIndex, newIndex) => setState(() {
             final index = newIndex > oldIndex ? newIndex - 1 : newIndex;
@@ -60,7 +51,8 @@ class _PrioPageState extends State<PrioPage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             FloatingActionButton(
-                onPressed: () => delete_all_items(), child: Icon(Icons.delete_sharp)),
+                onPressed: () => delete_all_items(),
+                child: Icon(Icons.delete_sharp)),
             Container(
               height: 80.0,
               width: 80.0,
@@ -88,6 +80,29 @@ class _PrioPageState extends State<PrioPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             //Text(user.prio),
+            SizedBox(
+              width: 30,
+              height: 40,
+              child: Container(
+                //padding: EdgeInsets.only(top: 9.0),
+                alignment: Alignment.bottomCenter,
+                child: TextField(
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    hintText: user.time.toString(),
+                    border: InputBorder.none,
+                    //border: OutlineInputBorder(),
+                    //contentPadding: EdgeInsets.only(top: 9.0)
+                  ),
+                  onChanged: (String time) {
+                    setState(() {
+                      user.time = int.parse(time);
+                    });
+                  },
+                ),
+              ),
+            ),
             ElevatedButton(
               style: ButtonStyle(
                   minimumSize: MaterialStateProperty.resolveWith(
@@ -119,6 +134,7 @@ class _PrioPageState extends State<PrioPage> {
               icon: Icon(Icons.edit, color: Colors.black),
               onPressed: () => edit(index),
             ),
+
             IconButton(
               icon: Icon(Icons.delete, color: Colors.black),
               onPressed: () => remove(index),
