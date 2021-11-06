@@ -1,5 +1,6 @@
 ///Dart imports
 import 'dart:convert';
+
 import 'dart:math';
 
 ///Package imports
@@ -130,16 +131,38 @@ class _DragAndDropCalendarState extends SampleViewState {
     final List<Color> colorCollection = <Color>[];
 
     final List<Appointment> appointments = <Appointment>[];
-    DateTime today = DateTime.now();
+
     //sort user by start time
     //TODO
+
+
     print("users123: $users");
+
+    DateTime today = DateTime.now();
+    DateTime nextMeeting = DateTime(
+        today.year, today.month, today.day, 8, 0, 0);
+
+
     for (int i = 0; i < users.length; i++) {
       //subjectCollection.add(users[i].name);
       //colorCollection.add(get_my_color(users[i].prio, users[i].done));
 
-      DateTime startDate = DateTime(
-          today.year, today.month, today.day, users[i].start, 0, 0);
+      users[i].time = users[i].time == 0 ? 60: users[i].time;
+
+
+
+      DateTime startDate;
+      // is item already place? -> use this time : else calculate last stop
+      if (users[i].placed){
+        startDate = DateTime.parse(users[i].start);
+
+      } else{
+        startDate = nextMeeting;
+        nextMeeting = startDate.add(Duration(minutes: users[i].time));
+        users[i].placed = true;
+      }
+
+
       appointments.add(Appointment(
         subject: users[i].name,
         startTime: startDate,
@@ -200,7 +223,7 @@ class _DragAndDropCalendarState extends SampleViewState {
       monthViewSettings: const MonthViewSettings(
           appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
       timeSlotViewSettings: const TimeSlotViewSettings(
-          minimumAppointmentDuration: Duration(minutes: 60)),
+          minimumAppointmentDuration: Duration(minutes: 15)),
     );
   }
 

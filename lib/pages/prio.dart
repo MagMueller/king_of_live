@@ -212,7 +212,7 @@ class _PrioPageState extends State<PrioPage> {
   }
 
   _addTodoItem(String name) => setState(() {
-        users.add(Items(name: name, prio: 3, done: false, time: 0));
+        users.add(Items(name: name, prio: 3, done: false, time: 0,  )); //start: DateTime.now().toIso8601String()
         _saveItems(users);
       });
 

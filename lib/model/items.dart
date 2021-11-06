@@ -5,14 +5,17 @@ class Items {
   int prio = 3;
   bool done = false;
   int time = 30;
-  int start = 8;
+   //String today =  DateTime.now().toIso8601String();
+  String start =  DateTime.now().toIso8601String(); // = today; //DateTime(today.year, today.day, today.hour, today.);
+  bool placed = false;
 
   Items({
     required this.name,
     required this.prio,
     required this.done,
     required this.time,
-  this.start =  -1});
+  //required this.start
+  });
 
   Map<String, dynamic> toJson(){
     return{
