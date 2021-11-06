@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import '../model/item.dart';
+import '../model/items.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PrioPage extends StatefulWidget {
   @override
@@ -14,15 +17,8 @@ class _PrioPageState extends State<PrioPage> {
   @override
   void initState() {
     super.initState();
+    _loadItems();
 
-    Items mag = Items(name: "Magnus Müller", prio: 1);
-    Items joh = new Items(name: "Johanna Müller", prio: 2);
-    users = [
-      mag,
-      joh,
-      new Items(name: "Johanna Müller", prio: 2),
-      new Items(name: "Johanna Müller", prio: 2),
-    ];
   }
 
   @override
@@ -98,6 +94,7 @@ class _PrioPageState extends State<PrioPage> {
                   onChanged: (String time) {
                     setState(() {
                       user.time = int.parse(time);
+                      _saveItems(users);
                     });
                   },
                 ),
@@ -125,6 +122,7 @@ class _PrioPageState extends State<PrioPage> {
                   } else {
                     user.prio += 1;
                   }
+                  _saveItems(users);
                 });
               },
             ),
@@ -148,7 +146,10 @@ class _PrioPageState extends State<PrioPage> {
         ),
       );
 
-  void remove(int index) => setState(() => users.removeAt(index));
+  void remove(int index) => setState(() {
+        users.removeAt(index);
+        _saveItems(users);
+      });
 
   void edit(int index) => showDialog(
         context: context,
@@ -159,7 +160,10 @@ class _PrioPageState extends State<PrioPage> {
             content: TextFormField(
               initialValue: user.name,
               onFieldSubmitted: (_) => Navigator.of(context).pop(),
-              onChanged: (name) => setState(() => user.name = name),
+              onChanged: (name) => setState(() {
+                user.name = name;
+                _saveItems(users);
+              }),
             ),
           );
         },
@@ -179,6 +183,7 @@ class _PrioPageState extends State<PrioPage> {
           }
         }
         users = [...prio_A, ...prio_B, ...prio_C];
+        _saveItems(users);
       });
 
   Color get_my_color(int prio, bool done) {
@@ -203,8 +208,10 @@ class _PrioPageState extends State<PrioPage> {
     }
   }
 
-  _addTodoItem(String name) =>
-      setState(() => users.add(Items(name: name, prio: 3)));
+  _addTodoItem(String name) => setState(() {
+        users.add(Items(name: name, prio: 3, done: false, time: 0));
+        _saveItems(users);
+      });
 
   Future<void> _displayDialog() async {
     return showDialog<void>(
@@ -234,10 +241,49 @@ class _PrioPageState extends State<PrioPage> {
   done(int index) {
     setState(() {
       users[index].done = !users[index].done;
+      _saveItems(users);
     });
   }
 
   delete_all_items() {
-    users = [];
+    setState(() {
+      users = [];
+    });
+    _saveItems(users);
+  }
+
+  _saveItems(List<Items> users) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    List<String> users_strings = [];
+    for (int i = 0; i < users.length; i++) {
+      users_strings.add(jsonEncode(users[i]));
+    }
+    print("This will be saved: $users_strings");
+    prefs.setStringList('users', users_strings);
+  }
+
+  Future<void> _loadItems() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    print("Started");
+
+    List<String> users_string = prefs.getStringList('users') ?? [];
+
+    List<Items> user_list = [];
+    if (users_string == []) {
+      print("no Data found");
+    } else {
+      print('Loaded $users_string');
+      for (int i = 0; i < users_string.length; i++) {
+        Map<String, dynamic> map = jsonDecode(users_string[i]);
+        print("map: $map");
+        final loaded_item = Items.fromJson(map);
+        user_list.add(loaded_item);
+      }
+    }
+
+    setState(() {
+      users = user_list;
+    });
   }
 }
