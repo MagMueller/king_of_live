@@ -16,6 +16,8 @@ class _PrioPageState extends State<PrioPage> {
   List<bool> isSelected = [true, false, false];
   final TextEditingController _textFieldController = TextEditingController();
 
+  final _controller = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -101,6 +103,7 @@ class _PrioPageState extends State<PrioPage> {
                 //padding: EdgeInsets.only(top: 9.0),
                 alignment: Alignment.bottomCenter,
                 child: TextField(
+
                   textAlign: TextAlign.center,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
@@ -228,6 +231,7 @@ class _PrioPageState extends State<PrioPage> {
         return AlertDialog(
           title: const Text('Add a new todo item'),
           content: TextField(
+            autofocus: true,
             controller: _textFieldController,
             decoration: const InputDecoration(hintText: 'Type your new todo'),
           ),

@@ -4,7 +4,7 @@ class Items {
   String name = "TODO";
   int prio = 3;
   bool done = false;
-  int time = 30;
+  int time = 60;
    //String today =  DateTime.now().toIso8601String();
   String start =  DateTime.now().toIso8601String(); // = today; //DateTime(today.year, today.day, today.hour, today.);
   bool placed = false;
