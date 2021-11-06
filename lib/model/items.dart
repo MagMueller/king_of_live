@@ -5,12 +5,14 @@ class Items {
   int prio = 3;
   bool done = false;
   int time = 30;
+  int start = 8;
 
   Items({
     required this.name,
     required this.prio,
     required this.done,
-    required this.time});
+    required this.time,
+  this.start =  -1});
 
   Map<String, dynamic> toJson(){
     return{
@@ -18,6 +20,7 @@ class Items {
       'prio': prio,
       'done': done,
       'time': time,
+      'start': start,
     };
   }
 
@@ -26,5 +29,6 @@ class Items {
     prio = json['prio'];
     done = json['done'];
     time = json['time'];
+    start = json['start'];
   }
 }

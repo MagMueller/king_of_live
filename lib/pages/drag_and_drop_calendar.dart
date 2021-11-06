@@ -1,16 +1,20 @@
 ///Dart imports
+import 'dart:convert';
 import 'dart:math';
 
 ///Package imports
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:king_of_live/model/items.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 ///calendar import
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 ///Local import
 import '../../model/sample_view.dart';
+import 'prio.dart';
 
 /// Widget of getting started calendar
 class DragAndDropCalendar extends SampleView {
@@ -43,12 +47,16 @@ class _DragAndDropCalendarState extends SampleViewState {
   final GlobalKey _globalKey = GlobalKey();
   final ScrollController _controller = ScrollController();
   final CalendarController _calendarController = CalendarController();
-
+  List<Items> users = [];
+  bool loading = true;
   @override
   void initState() {
+    //loadItems();
     _currentView = CalendarView.day;
     _calendarController.view = _currentView;
-    _events = _DataSource(getAppointmentDetails());
+   // Future future = getAppointmentDetails();
+    loadMeetings();
+
     super.initState();
     WidgetsFlutterBinding.ensureInitialized();
 
@@ -56,35 +64,40 @@ class _DragAndDropCalendarState extends SampleViewState {
 
   @override
   Widget build(BuildContext context) {
+    if(loading) return CircularProgressIndicator();
+
     final Widget calendar = Theme(
 
-        /// The key set here to maintain the state,
-        ///  when we change the parent of the widget
-        //key: _globalKey,
+      /// The key set here to maintain the state,
+      ///  when we change the parent of the widget
+      //key: _globalKey,
         data: ThemeData.light(),
         child: _getDragAndDropCalendar(
             _calendarController, _events, _onViewChanged));
 
-    final double screenHeight = MediaQuery.of(context).size.height;
+    final double screenHeight = MediaQuery
+        .of(context)
+        .size
+        .height;
     return Scaffold(
       body: Row(children: <Widget>[
         Expanded(
           child: _calendarController.view == CalendarView.month &&
-                  model.isWebFullView &&
-                  screenHeight < 800
+              model.isWebFullView &&
+              screenHeight < 800
               ? Scrollbar(
-                  isAlwaysShown: true,
-                  controller: _controller,
-                  child: ListView(
-                    controller: _controller,
-                    children: <Widget>[
-                      Container(
-                        color: model.cardThemeColor,
-                        height: 600,
-                        child: calendar,
-                      )
-                    ],
-                  ))
+              isAlwaysShown: true,
+              controller: _controller,
+              child: ListView(
+                controller: _controller,
+                children: <Widget>[
+                  Container(
+                    color: model.cardThemeColor,
+                    height: 600,
+                    child: calendar,
+                  )
+                ],
+              ))
               : Container(color: model.cardThemeColor, child: calendar),
         )
       ]),
@@ -95,6 +108,7 @@ class _DragAndDropCalendarState extends SampleViewState {
   /// when the view changes from or to month view because month view placed
   /// on scroll view.
   void _onViewChanged(ViewChangedDetails viewChangedDetails) {
+    //loadItems();
     if (_currentView != CalendarView.month &&
         _calendarController.view != CalendarView.month) {
       _currentView = _calendarController.view!;
@@ -111,54 +125,52 @@ class _DragAndDropCalendarState extends SampleViewState {
 
   /// Creates the required appointment details as a list.
   List<Appointment> getAppointmentDetails() {
-    final List<String> subjectCollection = <String>[];
-    subjectCollection.add('General Meeting');
-    subjectCollection.add('Plan Execution');
-    subjectCollection.add('Project Plan');
-    subjectCollection.add('Consulting');
-    subjectCollection.add('Support');
-    subjectCollection.add('Development Meeting');
-    subjectCollection.add('Scrum');
-    subjectCollection.add('Project Completion');
-    subjectCollection.add('Release updates');
-    subjectCollection.add('Performance Check');
 
+    final List<String> subjectCollection = <String>[];
     final List<Color> colorCollection = <Color>[];
-    colorCollection.add(const Color(0xFF0F8644));
-    colorCollection.add(const Color(0xFF8B1FA9));
-    colorCollection.add(const Color(0xFFD20100));
-    colorCollection.add(const Color(0xFFFC571D));
-    colorCollection.add(const Color(0xFF36B37B));
-    colorCollection.add(const Color(0xFF01A1EF));
-    colorCollection.add(const Color(0xFF3D4FB5));
-    colorCollection.add(const Color(0xFFE47C73));
-    colorCollection.add(const Color(0xFF636363));
-    colorCollection.add(const Color(0xFF0A8043));
 
     final List<Appointment> appointments = <Appointment>[];
+    DateTime today = DateTime.now();
+    //sort user by start time
+    //TODO
+    print("users123: $users");
+    for (int i = 0; i < users.length; i++) {
+      //subjectCollection.add(users[i].name);
+      //colorCollection.add(get_my_color(users[i].prio, users[i].done));
+
+      DateTime startDate = DateTime(
+          today.year, today.month, today.day, users[i].start, 0, 0);
+      appointments.add(Appointment(
+        subject: users[i].name,
+        startTime: startDate,
+        endTime: startDate.add(Duration(minutes: users[i].time)),
+        color: get_my_color(users[i].prio, users[i].done),
+      ));
+    }
+
+    /**
     final Random random = Random();
     DateTime today = DateTime.now();
+
+
     final DateTime rangeStartDate =
-        today.add(const Duration(days: -(365 ~/ 2)));
+    today.add(const Duration(days: -(365 ~/ 2)));
     final DateTime rangeEndDate = today.add(const Duration(days: 365));
+
     for (DateTime i = rangeStartDate;
-        i.isBefore(rangeEndDate);
-        i = i.add(const Duration(days: 1))) {
+    i.isBefore(rangeEndDate);
+    i = i.add(const Duration(days: 1))) {
       final DateTime date = i;
       final int count = random.nextInt(2);
+
       for (int j = 0; j < count; j++) {
         final DateTime startDate = DateTime(
-            date.year, date.month, date.day, 8 + random.nextInt(8), 0, 0);
-        appointments.add(Appointment(
-          subject: subjectCollection[random.nextInt(7)],
-          startTime: startDate,
-          endTime: startDate.add(Duration(hours: random.nextInt(3))),
-          color: colorCollection[random.nextInt(9)],
-        ));
+            today.year, today.month, today.day, 8 + random.nextInt(8), 0, 0);
       }
     }
 
-    today = DateTime(today.year, today.month, today.day, 9);
+
+    today = DateTime(today.year, today.month, today.day, 8);
     // added recurrence appointment
     appointments.add(Appointment(
         subject: 'Development status',
@@ -166,14 +178,15 @@ class _DragAndDropCalendarState extends SampleViewState {
         endTime: today.add(const Duration(hours: 2)),
         color: colorCollection[random.nextInt(9)],
         recurrenceRule: 'FREQ=WEEKLY;BYDAY=FR;INTERVAL=1'));
+
+        **/
     return appointments;
   }
 
   /// Returns the calendar widget based on the properties passed.
-  SfCalendar _getDragAndDropCalendar(
-      [CalendarController? calendarController,
-      CalendarDataSource? calendarDataSource,
-      ViewChangedCallback? viewChangedCallback]) {
+  SfCalendar _getDragAndDropCalendar([CalendarController? calendarController,
+    CalendarDataSource? calendarDataSource,
+    ViewChangedCallback? viewChangedCallback]) {
     return SfCalendar(
       controller: calendarController,
       dataSource: calendarDataSource,
@@ -183,12 +196,47 @@ class _DragAndDropCalendarState extends SampleViewState {
       allowDragAndDrop: true,
       showDatePickerButton: true,
       dragAndDropSettings:
-          const DragAndDropSettings(indicatorTimeFormat: 'hh:mm a'),
+      const DragAndDropSettings(indicatorTimeFormat: 'hh:mm a'),
       monthViewSettings: const MonthViewSettings(
           appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
       timeSlotViewSettings: const TimeSlotViewSettings(
           minimumAppointmentDuration: Duration(minutes: 60)),
     );
+  }
+
+  Future<void> loadItems() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    print("Started");
+
+    List<String> users_string = prefs.getStringList('users') ?? [];
+
+    List<Items> user_list = [];
+    if (users_string == []) {
+      print("no Data found");
+    } else {
+      print('Loaded $users_string');
+      for (int i = 0; i < users_string.length; i++) {
+        Map<String, dynamic> map = jsonDecode(users_string[i]);
+        print("map: $map");
+        Items loaded_item = Items.fromJson(map);
+        print("list $loaded_item");
+        user_list.add(loaded_item);
+      }
+    }
+    setState(() {
+
+      users = user_list;
+      loading = false;
+    });
+  }
+
+  void loadMeetings() async{
+    await loadItems();
+    setState(() {
+      _events = _DataSource(getAppointmentDetails());
+    });
+
+
   }
 }
 

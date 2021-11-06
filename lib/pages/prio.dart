@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import '../model/items.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'drag_and_drop_calendar.dart';
+
 class PrioPage extends StatefulWidget {
   @override
   _PrioPageState createState() => _PrioPageState();
@@ -17,8 +19,7 @@ class _PrioPageState extends State<PrioPage> {
   @override
   void initState() {
     super.initState();
-    _loadItems();
-
+    loadItems();
   }
 
   @override
@@ -56,6 +57,19 @@ class _PrioPageState extends State<PrioPage> {
                   onPressed: () => _displayDialog(),
                   tooltip: 'Add Item',
                   child: Icon(Icons.add)),
+            ),
+            Container(
+              height: 80.0,
+              width: 80.0,
+              child: FloatingActionButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const DragAndDropCalendar()),
+                    );
+                  },
+                  child: Icon(Icons.calendar_today)),
             ),
             FloatingActionButton(
               child: Icon(Icons.shuffle),
@@ -186,18 +200,7 @@ class _PrioPageState extends State<PrioPage> {
         _saveItems(users);
       });
 
-  Color get_my_color(int prio, bool done) {
-    if (done) {
-      return Colors.green;
-    } else if (prio == 1) {
-      return Colors.red;
-    } else if (prio == 2) {
-      return Colors.orange;
-    } else if (prio == 3) {
-      return Colors.yellow;
-    } else
-      return Colors.pink;
-  }
+
 
   String get_prio_text(int prio) {
     List<String> prios = ["A", "B", "C"];
@@ -263,7 +266,7 @@ class _PrioPageState extends State<PrioPage> {
     prefs.setStringList('users', users_strings);
   }
 
-  Future<void> _loadItems() async {
+  Future<void> loadItems() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     print("Started");
 
@@ -281,9 +284,20 @@ class _PrioPageState extends State<PrioPage> {
         user_list.add(loaded_item);
       }
     }
-
     setState(() {
       users = user_list;
     });
   }
+}
+Color get_my_color(int prio, bool done) {
+  if (done) {
+    return Colors.green;
+  } else if (prio == 1) {
+    return Colors.red;
+  } else if (prio == 2) {
+    return Colors.orange;
+  } else if (prio == 3) {
+    return Colors.yellow;
+  } else
+    return Colors.pink;
 }
