@@ -154,13 +154,15 @@ class _DragAndDropCalendarState extends SampleViewState {
       }
 
       users[i].start = startDate.toIso8601String();
-
-      appointments.add(Appointment(
+      Appointment appointment = Appointment(
         subject: users[i].name,
         startTime: startDate,
         endTime: startDate.add(Duration(minutes: users[i].time)),
         color: get_my_color(users[i].prio, users[i].done),
-      ));
+      );
+
+      appointments.add(appointment);
+      users[i].my_id = appointment.id as int;
     }
     saveItems(users);
     return appointments;
@@ -179,8 +181,9 @@ class _DragAndDropCalendarState extends SampleViewState {
       onViewChanged: viewChangedCallback,
       allowDragAndDrop: true,
       showDatePickerButton: true,
+      onDragEnd: dragEnd,
       dragAndDropSettings:
-          const DragAndDropSettings(indicatorTimeFormat: 'hh:mm a'),
+          const DragAndDropSettings(indicatorTimeFormat: 'hh:mm a', showTimeIndicator: true),
       monthViewSettings: const MonthViewSettings(
           appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
       timeSlotViewSettings: const TimeSlotViewSettings(
@@ -218,6 +221,20 @@ class _DragAndDropCalendarState extends SampleViewState {
     setState(() {
       _events = _DataSource(getAppointmentDetails());
     });
+  }
+
+  void dragEnd(AppointmentDragEndDetails appointmentDragEndDetails) {
+    dynamic appointment = appointmentDragEndDetails.appointment!;
+
+    // change the time of the moved appointment
+    for(int i = 0; i < users.length; i++){
+      print("appointment ${appointment.id}");
+      if(users[i].my_id == appointment.id){
+        users[i].start = appointment.startTime.toIso8601String();
+        break;
+      }
+    }
+
   }
 }
 

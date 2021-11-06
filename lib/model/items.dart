@@ -8,6 +8,7 @@ class Items {
    //String today =  DateTime.now().toIso8601String();
   String start =  DateTime.now().toIso8601String(); // = today; //DateTime(today.year, today.day, today.hour, today.);
   bool placed = false;
+  int my_id = 0;
 
   Items({
     required this.name,
@@ -25,6 +26,7 @@ class Items {
       'time': time,
       'start': start,
       'placed': placed,
+      'my_id': my_id,
     };
   }
 
@@ -35,5 +37,6 @@ class Items {
     time = json['time'];
     start = json['start'];
     placed = json['placed'];
+    my_id = json['my_id'];
   }
 }
