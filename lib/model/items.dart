@@ -11,9 +11,9 @@ class Items {
 
   Items({
     required this.name,
-    required this.prio,
-    required this.done,
-    required this.time,
+    //required this.prio,
+    //required this.done,
+    //required this.time,
   //required this.start
   });
 
@@ -24,6 +24,7 @@ class Items {
       'done': done,
       'time': time,
       'start': start,
+      'placed': placed,
     };
   }
 
@@ -33,5 +34,6 @@ class Items {
     done = json['done'];
     time = json['time'];
     start = json['start'];
+    placed = json['placed'];
   }
 }

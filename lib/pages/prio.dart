@@ -66,7 +66,11 @@ class _PrioPageState extends State<PrioPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const DragAndDropCalendar()),
+                          builder: (context) =>  DragAndDropCalendar()),
+                    ).then(
+                            (context) {
+                          loadItems();
+                        }
                     );
                   },
                   child: Icon(Icons.calendar_today)),
@@ -108,7 +112,7 @@ class _PrioPageState extends State<PrioPage> {
                   onChanged: (String time) {
                     setState(() {
                       user.time = int.parse(time);
-                      _saveItems(users);
+                      saveItems(users);
                     });
                   },
                 ),
@@ -136,7 +140,7 @@ class _PrioPageState extends State<PrioPage> {
                   } else {
                     user.prio += 1;
                   }
-                  _saveItems(users);
+                  saveItems(users);
                 });
               },
             ),
@@ -162,7 +166,7 @@ class _PrioPageState extends State<PrioPage> {
 
   void remove(int index) => setState(() {
         users.removeAt(index);
-        _saveItems(users);
+        saveItems(users);
       });
 
   void edit(int index) => showDialog(
@@ -176,7 +180,7 @@ class _PrioPageState extends State<PrioPage> {
               onFieldSubmitted: (_) => Navigator.of(context).pop(),
               onChanged: (name) => setState(() {
                 user.name = name;
-                _saveItems(users);
+                saveItems(users);
               }),
             ),
           );
@@ -197,7 +201,7 @@ class _PrioPageState extends State<PrioPage> {
           }
         }
         users = [...prio_A, ...prio_B, ...prio_C];
-        _saveItems(users);
+        saveItems(users);
       });
 
 
@@ -212,8 +216,8 @@ class _PrioPageState extends State<PrioPage> {
   }
 
   _addTodoItem(String name) => setState(() {
-        users.add(Items(name: name, prio: 3, done: false, time: 0,  )); //start: DateTime.now().toIso8601String()
-        _saveItems(users);
+        users.add(Items(name: name )); //start: DateTime.now().toIso8601String()
+        saveItems(users);
       });
 
   Future<void> _displayDialog() async {
@@ -244,7 +248,7 @@ class _PrioPageState extends State<PrioPage> {
   done(int index) {
     setState(() {
       users[index].done = !users[index].done;
-      _saveItems(users);
+      saveItems(users);
     });
   }
 
@@ -252,19 +256,10 @@ class _PrioPageState extends State<PrioPage> {
     setState(() {
       users = [];
     });
-    _saveItems(users);
+    saveItems(users);
   }
 
-  _saveItems(List<Items> users) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    List<String> users_strings = [];
-    for (int i = 0; i < users.length; i++) {
-      users_strings.add(jsonEncode(users[i]));
-    }
-    print("This will be saved: $users_strings");
-    prefs.setStringList('users', users_strings);
-  }
 
   Future<void> loadItems() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -300,4 +295,16 @@ Color get_my_color(int prio, bool done) {
     return Colors.yellow;
   } else
     return Colors.pink;
+}
+
+
+saveItems(List<Items> users) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  List<String> users_strings = [];
+  for (int i = 0; i < users.length; i++) {
+    users_strings.add(jsonEncode(users[i]));
+  }
+  print("This will be saved: $users_strings");
+  prefs.setStringList('users', users_strings);
 }
