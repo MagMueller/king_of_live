@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../model/web_view.dart';
+//import '../model/web_view.dart';
 
 /// Local import
 import '../sample_list.dart';
@@ -415,7 +415,7 @@ class SampleModel extends Listenable {
   late dynamic outputContainerState;
 
   ///Storing state of web output container
-  late SampleOutputContainerState webOutputContainerState;
+  //late SampleOutputContainerState webOutputContainerState;
 
   ///check whether application is running on web/linuxOS/windowsOS/macOS
   bool isWebFullView = false;

@@ -20,8 +20,8 @@ import 'prio.dart';
 /// Widget of getting started calendar
 class DragAndDropCalendar extends SampleView {
   /// Creates default getting started calendar
-  //final bool reloaded;
-  const DragAndDropCalendar({bool? reloaded,  Key? key}) : super(key: key);
+
+  const DragAndDropCalendar({Key? key}) : super(key: key);
 
   @override
   _DragAndDropCalendarState createState() => _DragAndDropCalendarState();
@@ -35,7 +35,7 @@ class _DragAndDropCalendarState extends SampleViewState {
 
   final List<CalendarView> _allowedViews = <CalendarView>[
     CalendarView.day,
-    //CalendarView.week,
+    CalendarView.week,
     //CalendarView.workWeek,
     CalendarView.timelineDay,
     //CalendarView.month,
@@ -131,11 +131,6 @@ class _DragAndDropCalendarState extends SampleViewState {
   List<Appointment> getAppointmentDetails() {
     final List<Appointment> appointments = <Appointment>[];
 
-    //sort user by start time
-    //TODO
-
-    print("users123: $users");
-
     DateTime today = DateTime.now();
     DateTime nextMeeting =
         DateTime(today.year, today.month, today.day, 8, 0, 0);
@@ -150,7 +145,6 @@ class _DragAndDropCalendarState extends SampleViewState {
       // is item already place? -> use this time : else calculate last stop
       if (users[i].placed) {
         startDate = DateTime.parse(users[i].start);
-        print(users[i].name);
       } else {
         startDate = nextMeeting;
         nextMeeting = startDate.add(Duration(minutes: users[i].time));
@@ -186,8 +180,8 @@ class _DragAndDropCalendarState extends SampleViewState {
       allowDragAndDrop: true,
       showDatePickerButton: true,
       onDragEnd: dragEnd,
-      dragAndDropSettings:
-          const DragAndDropSettings(indicatorTimeFormat: 'hh:mm a', showTimeIndicator: true),
+      dragAndDropSettings: const DragAndDropSettings(
+          indicatorTimeFormat: 'hh:mm a', showTimeIndicator: true),
       monthViewSettings: const MonthViewSettings(
           appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
       timeSlotViewSettings: const TimeSlotViewSettings(
@@ -201,13 +195,9 @@ class _DragAndDropCalendarState extends SampleViewState {
     List<String> users_string = prefs.getStringList('users') ?? [];
 
     List<Items> user_list = [];
-    if (users_string == []) {
-      print("no Data found");
-    } else {
-      //print('Loaded $users_string');
+    if (users_string != []) {
       for (int i = 0; i < users_string.length; i++) {
         Map<String, dynamic> map = jsonDecode(users_string[i]);
-        print("loaded: $map");
         Items loaded_item = Items.fromJson(map);
         //print("list $loaded_item");
         user_list.add(loaded_item);
@@ -230,19 +220,15 @@ class _DragAndDropCalendarState extends SampleViewState {
     dynamic appointment = appointmentDragEndDetails.appointment!;
 
     // change the time of the moved appointment
-    for(int i = 0; i < users.length; i++){
-      //print("appointment ${appointment.id}");
-      if(users[i].my_id == appointment.id){
-        print("appointment ${appointment.id}");
-
+    for (int i = 0; i < users.length; i++) {
+      if (users[i].my_id == appointment.id) {
         users[i].start = appointment.startTime.toIso8601String();
-        print(users[i].start);
         break;
       }
     }
     saveItems(users);
-
   }
+
   Color get_my_color(int prio, bool done) {
     loadColors();
     if (done) {
@@ -271,8 +257,6 @@ class _DragAndDropCalendarState extends SampleViewState {
       done_color = Color(prefs.getInt('done_color') ?? Colors.green.value);
     });
   }
-
-
 }
 
 class _DataSource extends CalendarDataSource {

@@ -12,10 +12,7 @@ class Items {
 
   Items({
     required this.name,
-    //required this.prio,
-    //required this.done,
-    //required this.time,
-  //required this.start
+
   });
 
   Map<String, dynamic> toJson(){

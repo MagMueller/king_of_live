@@ -30,7 +30,7 @@ class _PrioPageState extends State<PrioPage> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: Text("Prioritize"), //MyApp.title
+          title: Text("Set priorities"), //MyApp.title
           centerTitle: true,
         ),
         body: ReorderableListView.builder(
@@ -53,13 +53,15 @@ class _PrioPageState extends State<PrioPage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             FloatingActionButton(
+                heroTag: "delete",
                 onPressed: () => delete_all_items(),
                 child: Icon(Icons.delete_sharp)),
             Container(
               height: 80.0,
               width: 80.0,
               child: FloatingActionButton(
-                  onPressed: () => _displayDialog(),
+                  heroTag: "edit",
+                  onPressed: () => _addNewItem(),
                   tooltip: 'Add Item',
                   child: Icon(Icons.add)),
             ),
@@ -67,11 +69,12 @@ class _PrioPageState extends State<PrioPage> {
               height: 80.0,
               width: 80.0,
               child: FloatingActionButton(
+                  heroTag: "calendarView",
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => DragAndDropCalendar(reloaded: true,)),
+                          builder: (context) => DragAndDropCalendar()),
                     ).then((context) {
                       loadItems();
                     });
@@ -80,6 +83,7 @@ class _PrioPageState extends State<PrioPage> {
             ),
             FloatingActionButton(
               child: Icon(Icons.shuffle),
+              heroTag: "reorder",
               onPressed: orderList,
             ),
           ],
@@ -93,10 +97,9 @@ class _PrioPageState extends State<PrioPage> {
         tileColor: get_my_color(user.prio, user.done),
         title: Text(user.name),
         trailing: Row(
-          //mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            //Text(user.prio),
+
             SizedBox(
               width: 30,
               height: 40,
@@ -109,8 +112,6 @@ class _PrioPageState extends State<PrioPage> {
                   decoration: InputDecoration(
                     hintText: user.time.toString(),
                     border: InputBorder.none,
-                    //border: OutlineInputBorder(),
-                    //contentPadding: EdgeInsets.only(top: 9.0)
                   ),
                   onChanged: (String time) {
                     setState(() {
@@ -221,7 +222,7 @@ class _PrioPageState extends State<PrioPage> {
         saveItems(users);
       });
 
-  Future<void> _displayDialog() async {
+  Future<void> _addNewItem() async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -263,18 +264,13 @@ class _PrioPageState extends State<PrioPage> {
 
   Future<void> loadItems() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    print("Started");
-
     List<String> users_string = prefs.getStringList('users') ?? [];
-
     List<Items> user_list = [];
-    if (users_string == []) {
-      print("no Data found");
-    } else {
-      print('Loaded $users_string');
+
+    //get every single item of the saved list and turn it into a user
+    if (users_string != []) {
       for (int i = 0; i < users_string.length; i++) {
         Map<String, dynamic> map = jsonDecode(users_string[i]);
-        print("map: $map");
         final loaded_item = Items.fromJson(map);
         user_list.add(loaded_item);
       }
@@ -308,7 +304,6 @@ class _PrioPageState extends State<PrioPage> {
       case 3:
         return prio_c_color;
     }
-
     //if nothing fits
     return prio_a_color;
   }
@@ -321,6 +316,6 @@ saveItems(List<Items> users) async {
   for (int i = 0; i < users.length; i++) {
     users_strings.add(jsonEncode(users[i]));
   }
-  print("This will be saved: $users_strings");
+  //print("This will be saved: $users_strings");
   prefs.setStringList('users', users_strings);
 }
