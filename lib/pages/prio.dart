@@ -23,6 +23,8 @@ class _PrioPageState extends State<PrioPage> {
   Color prioCColor = Colors.blueAccent;
   Color doneColor = Colors.green;
 
+  bool donesBellowEveryItems = false;
+
   @override
   void initState() {
     super.initState();
@@ -248,19 +250,43 @@ class _PrioPageState extends State<PrioPage> {
       );
 
   void orderList() => setState(() {
-        List<Items> prioA = [];
-        List<Items> prioB = [];
-        List<Items> prioC = [];
-        for (int i = 0; i < users.length; i++) {
-          if (users[i].prio == 1) {
-            prioA.add(users[i]);
-          } else if (users[i].prio == 2) {
-            prioB.add(users[i]);
-          } else if (users[i].prio == 3) {
-            prioC.add(users[i]);
-          }
+        if (donesBellowEveryItems) {
+          users.sort((a, b) {
+            int compare = (a.prio.compareTo(b.prio));
+            if (compare == 0) {
+              return (a.done ? 1 : 0).compareTo(b.done ? 1 : 0);
+            } else {
+              return compare;
+            }
+          });
+        } else {
+          users.sort((a, b) {
+            int compare = (a.done ? 1 : 0).compareTo(b.done ? 1 : 0);
+            if (compare == 0) {
+              return (a.prio.compareTo(b.prio));
+            } else {
+              return compare;
+            }
+          });
         }
-        users = [...prioA, ...prioB, ...prioC];
+
+        /**
+            List<Items> prioA = [];
+            List<Items> prioB = [];
+            List<Items> prioC = [];
+            for (int i = 0; i < users.length; i++) {
+            if (users[i].prio == 1) {
+            prioA.add(users[i]);
+            } else if (users[i].prio == 2) {
+            prioB.add(users[i]);
+            } else if (users[i].prio == 3) {
+            prioC.add(users[i]);
+            }
+            }
+            users = [...prioA, ...prioB, ...prioC];
+
+         **/
+        donesBellowEveryItems = !donesBellowEveryItems;
         saveItems(users);
       });
 
