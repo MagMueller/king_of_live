@@ -33,38 +33,46 @@ class _PrioPageState extends State<PrioPage> {
           title: Text("Set priorities"), //MyApp.title
           centerTitle: true,
         ),
-        body: ReorderableListView.builder(
-          shrinkWrap: true,
-          //padding: const EdgeInsets.symmetric(horizontal: 4),
-          itemCount: users.length,
-          onReorder: (oldIndex, newIndex) => setState(() {
-            final index = newIndex > oldIndex ? newIndex - 1 : newIndex;
+        body: Column(
+          children: [
+            Expanded(
+              child: SizedBox(
+                height: 750,
+                child: ReorderableListView.builder(
+                  //itemExtent: 60.0,
+                  shrinkWrap: true,
+                  //padding: const EdgeInsets.symmetric(horizontal: 4),
+                  itemCount: users.length,
+                  onReorder: (oldIndex, newIndex) => setState(() {
+                    final index = newIndex > oldIndex ? newIndex - 1 : newIndex;
 
-            final user = users.removeAt(oldIndex);
-            users.insert(index, user);
-          }),
-          itemBuilder: (context, index) {
-            final user = users[index];
+                    final user = users.removeAt(oldIndex);
+                    users.insert(index, user);
+                  }),
+                  itemBuilder: (context, index) {
+                    final user = users[index];
 
-            return buildUser(index, user, Colors.yellow, 6.0);
-          },
+                    return buildUser(index, user, Colors.yellow, 6.0);
+                  },
+                ),
+              ),
+            ),
+            Container(
+              height: 80,
+              color: Colors.blue,
+            ),
+          ],
         ),
         floatingActionButton: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
+            SizedBox(width: 0,),
             FloatingActionButton(
                 heroTag: "delete",
                 onPressed: () => delete_all_items(),
                 child: Icon(Icons.delete_sharp)),
-            Container(
-              height: 80.0,
-              width: 80.0,
-              child: FloatingActionButton(
-                  heroTag: "edit",
-                  onPressed: () => _addNewItem(),
-                  tooltip: 'Add Item',
-                  child: Icon(Icons.add)),
-            ),
+
             Container(
               height: 80.0,
               width: 80.0,
@@ -79,7 +87,16 @@ class _PrioPageState extends State<PrioPage> {
                       loadItems();
                     });
                   },
-                  child: Icon(Icons.calendar_today)),
+                  child: Icon(Icons.calendar_today_rounded, size: 30,)),
+            ),
+            Container(
+              height: 80.0,
+              width: 80.0,
+              child: FloatingActionButton(
+                  heroTag: "newItem",
+                  onPressed: () => _addNewItem(),
+                  tooltip: 'Add Item',
+                  child: Icon(Icons.add, size: 50,)),
             ),
             FloatingActionButton(
               child: Icon(Icons.shuffle),
@@ -93,13 +110,14 @@ class _PrioPageState extends State<PrioPage> {
   Widget buildUser(int index, Items user, Color color, double edge_insets) =>
       ListTile(
         key: ValueKey(user),
-        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        //minVerticalPadding: 10,
+
+        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         tileColor: get_my_color(user.prio, user.done),
         title: Text(user.name),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-
             SizedBox(
               width: 30,
               height: 40,
@@ -124,6 +142,7 @@ class _PrioPageState extends State<PrioPage> {
             ),
             ElevatedButton(
               style: ButtonStyle(
+
                   minimumSize: MaterialStateProperty.resolveWith(
                       (states) => Size(1, 40)),
                   backgroundColor: MaterialStateProperty.resolveWith(
@@ -132,7 +151,7 @@ class _PrioPageState extends State<PrioPage> {
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(700.0),
-                          side: BorderSide(color: Colors.black, width: 3.0)))),
+                          side: BorderSide(color:get_my_color(user.prio, user.done), width: 10.0)))),
               child: Text(
                 get_prio_text(user.prio),
                 style: TextStyle(color: Colors.black),
@@ -148,13 +167,11 @@ class _PrioPageState extends State<PrioPage> {
                 });
               },
             ),
-
             IconButton(
               iconSize: 22,
               icon: Icon(Icons.edit, color: Colors.black),
               onPressed: () => edit(index),
             ),
-
             IconButton(
               icon: Icon(Icons.delete, color: Colors.black),
               onPressed: () => remove(index),
