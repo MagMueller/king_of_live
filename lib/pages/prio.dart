@@ -1,12 +1,15 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import '../model/items.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'drag_and_drop_calendar.dart';
+//import 'package:icon_shadow/icon_shadow.dart';
+
 
 class PrioPage extends StatefulWidget {
+  const PrioPage({Key? key}) : super(key: key);
+
   @override
   _PrioPageState createState() => _PrioPageState();
 }
@@ -15,22 +18,25 @@ class _PrioPageState extends State<PrioPage> {
   List<Items> users = [];
   List<bool> isSelected = [true, false, false];
   final TextEditingController _textFieldController = TextEditingController();
-  Color prio_a_color = Colors.red;
-  Color prio_b_color = Colors.orange;
-  Color prio_c_color = Colors.lightBlueAccent;
-  Color done_color = Colors.green;
+  Color prioAColor = Colors.red;
+  Color prioBColor = Colors.orange;
+  Color prioCColor = Colors.lightBlueAccent;
+  Color doneColor = Colors.green;
 
   @override
   void initState() {
     super.initState();
+
+    ///load Data
     loadItems();
     loadColors();
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(BuildContext context) =>
+      Scaffold(
         appBar: AppBar(
-          title: Text("Set priorities"), //MyApp.title
+          title: const Text("Set priorities"), //MyApp.title
           centerTitle: true,
         ),
         body: Column(
@@ -38,42 +44,51 @@ class _PrioPageState extends State<PrioPage> {
             Expanded(
               child: SizedBox(
                 height: 750,
-                child: ReorderableListView.builder(
-                  //itemExtent: 60.0,
-                  shrinkWrap: true,
-                  //padding: const EdgeInsets.symmetric(horizontal: 4),
-                  itemCount: users.length,
-                  onReorder: (oldIndex, newIndex) => setState(() {
-                    final index = newIndex > oldIndex ? newIndex - 1 : newIndex;
 
-                    final user = users.removeAt(oldIndex);
-                    users.insert(index, user);
-                  }),
+                ///scrollable list
+                child: ReorderableListView.builder(
+                  shrinkWrap: true,
+
+                  ///logic for reorder
+                  itemCount: users.length,
+                  onReorder: (oldIndex, newIndex) =>
+                      setState(() {
+                        final index = newIndex > oldIndex
+                            ? newIndex - 1
+                            : newIndex;
+                        final user = users.removeAt(oldIndex);
+                        users.insert(index, user);
+                      }),
                   itemBuilder: (context, index) {
                     final user = users[index];
-
-                    return buildUser(index, user, Colors.yellow, 6.0);
+                    return buildUser(index, user, 6.0);
                   },
                 ),
               ),
             ),
+            //bottom box bellow the list -> you can scroll further up
             Container(
               height: 80,
               color: Colors.blue,
             ),
           ],
         ),
+
+        ///Buttons in bottom row
         floatingActionButton: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            SizedBox(width: 0,),
+
+            ///with sized box on the left the buttons are more in center
+            const SizedBox(
+              width: 0,
+            ),
             FloatingActionButton(
                 heroTag: "delete",
-                onPressed: () => delete_all_items(),
-                child: Icon(Icons.delete_sharp)),
-
-            Container(
+                onPressed: () => deleteAllItems(),
+                child: const Icon(Icons.delete_sharp)),
+            SizedBox(
               height: 80.0,
               width: 80.0,
               child: FloatingActionButton(
@@ -82,24 +97,30 @@ class _PrioPageState extends State<PrioPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => DragAndDropCalendar()),
+                          builder: (context) => const DragAndDropCalendar()),
                     ).then((context) {
                       loadItems();
                     });
                   },
-                  child: Icon(Icons.calendar_today_rounded, size: 30,)),
+                  child: const Icon(
+                    Icons.calendar_today_rounded,
+                    size: 30,
+                  )),
             ),
-            Container(
+            SizedBox(
               height: 80.0,
               width: 80.0,
               child: FloatingActionButton(
                   heroTag: "newItem",
                   onPressed: () => _addNewItem(),
                   tooltip: 'Add Item',
-                  child: Icon(Icons.add, size: 50,)),
+                  child: const Icon(
+                    Icons.add,
+                    size: 50,
+                  )),
             ),
             FloatingActionButton(
-              child: Icon(Icons.shuffle),
+              child: const Icon(Icons.shuffle),
               heroTag: "reorder",
               onPressed: orderList,
             ),
@@ -107,24 +128,33 @@ class _PrioPageState extends State<PrioPage> {
         ),
       );
 
-  Widget buildUser(int index, Items user, Color color, double edge_insets) =>
-      ListTile(
-        key: ValueKey(user),
-        //minVerticalPadding: 10,
+  ///this is one list entry
+  Widget buildUser(int index, Items user, double edgeInsets) {
+    Color currentColor = getMyColor(user.prio, user.done);
+    Color currentTextColor = getOppositeColor(currentColor);
 
-        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        tileColor: get_my_color(user.prio, user.done),
-        title: Text(user.name),
-        trailing: Row(
+    return ListTile(
+
+      ///key needed for scroll? and reorder
+      key: ValueKey(user),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      tileColor: currentColor,
+      title: Text(user.name, style: TextStyle(color: currentTextColor)),
+      trailing: Theme(
+        data: ThemeData(hintColor: currentTextColor),
+        child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
+
+            ///Text field for task time
             SizedBox(
               width: 30,
               height: 40,
               child: Container(
-                //padding: EdgeInsets.only(top: 9.0),
                 alignment: Alignment.bottomCenter,
                 child: TextField(
+                  style: TextStyle(
+                      color: currentTextColor),
                   textAlign: TextAlign.center,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
@@ -140,22 +170,26 @@ class _PrioPageState extends State<PrioPage> {
                 ),
               ),
             ),
+
+            ///Prio Button
             ElevatedButton(
               style: ButtonStyle(
-
                   minimumSize: MaterialStateProperty.resolveWith(
-                      (states) => Size(1, 40)),
+                          (states) => const Size(1, 40)),
                   backgroundColor: MaterialStateProperty.resolveWith(
-                      (states) => get_my_color(user.prio, user.done)),
-                  //backgroundColor: get_my_color(user.prio, user.done),
+                          (states) => currentColor),
+
+                  ///backgroundColor: get_my_color(user.prio, user.done),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(700.0),
-                          side: BorderSide(color:get_my_color(user.prio, user.done), width: 10.0)))),
+                          side: BorderSide(color: currentColor, width: 10.0)))),
               child: Text(
-                get_prio_text(user.prio),
-                style: TextStyle(color: Colors.black),
+                getPrioText(user.prio),
+                style: TextStyle(color: currentTextColor),
               ),
+
+              ///prio logic
               onPressed: () {
                 setState(() {
                   if (user.prio == 3) {
@@ -169,28 +203,32 @@ class _PrioPageState extends State<PrioPage> {
             ),
             IconButton(
               iconSize: 22,
-              icon: Icon(Icons.edit, color: Colors.black),
+              icon: Icon(Icons.edit, color: currentTextColor),
               onPressed: () => edit(index),
             ),
             IconButton(
-              icon: Icon(Icons.delete, color: Colors.black),
+              icon: Icon(Icons.delete, color: currentTextColor),
               onPressed: () => remove(index),
             ),
             IconButton(
               icon: Icon(Icons.done_outline,
-                  color: !user.done ? Colors.green : Colors.black),
+                  color: user.done ? Colors.green : currentTextColor),
               onPressed: () => done(index),
             ),
           ],
         ),
-      );
+      ),
+    );
+  }
 
-  void remove(int index) => setState(() {
+  void remove(int index) =>
+      setState(() {
         users.removeAt(index);
         saveItems(users);
       });
 
-  void edit(int index) => showDialog(
+  void edit(int index) =>
+      showDialog(
         context: context,
         builder: (context) {
           final user = users[index];
@@ -199,33 +237,35 @@ class _PrioPageState extends State<PrioPage> {
             content: TextFormField(
               initialValue: user.name,
               onFieldSubmitted: (_) => Navigator.of(context).pop(),
-              onChanged: (name) => setState(() {
-                user.name = name;
-                saveItems(users);
-              }),
+              onChanged: (name) =>
+                  setState(() {
+                    user.name = name;
+                    saveItems(users);
+                  }),
             ),
           );
         },
       );
 
-  void orderList() => setState(() {
-        List<Items> prio_A = [];
-        List<Items> prio_B = [];
-        List<Items> prio_C = [];
+  void orderList() =>
+      setState(() {
+        List<Items> prioA = [];
+        List<Items> prioB = [];
+        List<Items> prioC = [];
         for (int i = 0; i < users.length; i++) {
           if (users[i].prio == 1) {
-            prio_A.add(users[i]);
+            prioA.add(users[i]);
           } else if (users[i].prio == 2) {
-            prio_B.add(users[i]);
+            prioB.add(users[i]);
           } else if (users[i].prio == 3) {
-            prio_C.add(users[i]);
+            prioC.add(users[i]);
           }
         }
-        users = [...prio_A, ...prio_B, ...prio_C];
+        users = [...prioA, ...prioB, ...prioC];
         saveItems(users);
       });
 
-  String get_prio_text(int prio) {
+  String getPrioText(int prio) {
     List<String> prios = ["A", "B", "C"];
     if (prio <= 3 && prio >= 1) {
       return prios[prio - 1];
@@ -234,8 +274,9 @@ class _PrioPageState extends State<PrioPage> {
     }
   }
 
-  _addTodoItem(String name) => setState(() {
-        users.add(Items(name: name)); //start: DateTime.now().toIso8601String()
+  _addTodoItem(String name) =>
+      setState(() {
+        users.add(Items(name: name));
         saveItems(users);
       });
 
@@ -272,7 +313,7 @@ class _PrioPageState extends State<PrioPage> {
     });
   }
 
-  delete_all_items() {
+  deleteAllItems() {
     setState(() {
       users = [];
     });
@@ -281,58 +322,66 @@ class _PrioPageState extends State<PrioPage> {
 
   Future<void> loadItems() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> users_string = prefs.getStringList('users') ?? [];
-    List<Items> user_list = [];
+    List<String> usersString = prefs.getStringList('users') ?? [];
+    List<Items> userList = [];
 
-    //get every single item of the saved list and turn it into a user
-    if (users_string != []) {
-      for (int i = 0; i < users_string.length; i++) {
-        Map<String, dynamic> map = jsonDecode(users_string[i]);
-        final loaded_item = Items.fromJson(map);
-        user_list.add(loaded_item);
+    ///get every single item of the saved list and turn it into a user
+    if (usersString != []) {
+      for (int i = 0; i < usersString.length; i++) {
+        Map<String, dynamic> map = jsonDecode(usersString[i]);
+        final loadedItem = Items.fromJson(map);
+        userList.add(loadedItem);
       }
     }
     setState(() {
-      users = user_list;
+      users = userList;
     });
   }
 
   void loadColors() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      prio_a_color = Color(prefs.getInt('prio_a_color') ?? Colors.red.value);
-      prio_b_color = Color(prefs.getInt('prio_b_color') ?? Colors.orange.value);
-      prio_c_color =
+      prioAColor = Color(prefs.getInt('prio_a_color') ?? Colors.red.value);
+      prioBColor = Color(prefs.getInt('prio_b_color') ?? Colors.orange.value);
+      prioCColor =
           Color(prefs.getInt('prio_c_color') ?? Colors.lightBlueAccent.value);
-      done_color = Color(prefs.getInt('done_color') ?? Colors.green.value);
+      doneColor = Color(prefs.getInt('done_color') ?? Colors.green.value);
     });
   }
 
-  Color get_my_color(int prio, bool done) {
+  Color getMyColor(int prio, bool done) {
     loadColors();
     if (done) {
-      return done_color;
+      return doneColor;
     }
     switch (prio) {
       case 1:
-        return prio_a_color;
+        return prioAColor;
       case 2:
-        return prio_b_color;
+        return prioBColor;
       case 3:
-        return prio_c_color;
+        return prioCColor;
     }
     //if nothing fits
-    return prio_a_color;
+    return prioAColor;
   }
+}
+
+Color getOppositeColor(Color currentColor) {
+  Color currentTextColor = useWhiteForeground(currentColor) ?
+  const Color(0xffffffff) :
+  const Color(0xff000000);
+
+  return currentTextColor;
 }
 
 saveItems(List<Items> users) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
-  List<String> users_strings = [];
+  List<String> usersStrings = [];
   for (int i = 0; i < users.length; i++) {
-    users_strings.add(jsonEncode(users[i]));
+    usersStrings.add(jsonEncode(users[i]));
   }
   //print("This will be saved: $users_strings");
-  prefs.setStringList('users', users_strings);
+  prefs.setStringList('users', usersStrings);
 }

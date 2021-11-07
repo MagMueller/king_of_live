@@ -1,11 +1,11 @@
-import 'package:flutter/cupertino.dart' show CupertinoTextField;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsRoute extends StatefulWidget {
+  const SettingsRoute({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _SettingsRouteState();
 }
@@ -14,16 +14,17 @@ class _SettingsRouteState extends State<SettingsRoute> {
   bool lightTheme = true;
 
   //Color currentColor = Colors.limeAccent;
-  Color prio_a_color = Colors.red;
-  Color prio_b_color = Colors.orange;
-  Color prio_c_color = Colors.lightBlueAccent;
-  Color done_color = Colors.green;
+  Color prioAColor = Colors.red;
+  Color prioBColor = Colors.orange;
+  Color prioCColor = Colors.lightBlueAccent;
+  Color doneColor = Colors.green;
 
   //List<Color> currentColors = [Colors.limeAccent, Colors.green];
 
   @override
   void initState() {
     loadColors();
+    super.initState();
   }
 
   //
@@ -38,12 +39,12 @@ class _SettingsRouteState extends State<SettingsRoute> {
         child: Scaffold(
           appBar: AppBar(
             title: GestureDetector(
-              child: Text('Settings'),
+              child: const Text('Settings'),
               onDoubleTap: () => setState(() => lightTheme = !lightTheme),
             ),
-            bottom: TabBar(
+            bottom: const TabBar(
               tabs: <Widget>[
-                const Tab(text: 'Color'),
+                Tab(text: 'Color'),
                 //const Tab(text: 'Material'),
                 //const Tab(text: 'Block'),
               ],
@@ -55,122 +56,12 @@ class _SettingsRouteState extends State<SettingsRoute> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  RaisedButton(
-                    elevation: 3.0,
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            titlePadding: const EdgeInsets.all(0.0),
-                            contentPadding: const EdgeInsets.all(0.0),
-                            content: SingleChildScrollView(
-                              child: MaterialPicker(
-                                pickerColor: prio_a_color,
-                                onColorChanged: (Color color) => setState(() {
-                                  prio_a_color = color;
-                                  saveColors();
-                                }),
-                                enableLabel: true,
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    child: const Text('Prio A'),
-                    color: prio_a_color,
-                    textColor: useWhiteForeground(prio_a_color)
-                        ? const Color(0xffffffff)
-                        : const Color(0xff000000),
-                  ),
-                  RaisedButton(
-                    elevation: 3.0,
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            titlePadding: const EdgeInsets.all(0.0),
-                            contentPadding: const EdgeInsets.all(0.0),
-                            content: SingleChildScrollView(
-                              child: MaterialPicker(
-                                pickerColor: prio_b_color,
-                                onColorChanged: (Color color) => setState(() {
-                                  prio_b_color = color;
-                                  saveColors();
-                                }),
-                                enableLabel: true,
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    child: const Text('Prio B'),
-                    color: prio_b_color,
-                    textColor: useWhiteForeground(prio_b_color)
-                        ? const Color(0xffffffff)
-                        : const Color(0xff000000),
-                  ),
-                  RaisedButton(
-                    elevation: 3.0,
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            titlePadding: const EdgeInsets.all(0.0),
-                            contentPadding: const EdgeInsets.all(0.0),
-                            content: SingleChildScrollView(
-                              child: MaterialPicker(
-                                pickerColor: prio_c_color,
-                                onColorChanged: (Color color) => setState(() {
-                                  prio_c_color = color;
-                                  saveColors();
-                                }),
-                                enableLabel: true,
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    child: const Text('Prio C'),
-                    color: prio_c_color,
-                    textColor: useWhiteForeground(prio_c_color)
-                        ? const Color(0xffffffff)
-                        : const Color(0xff000000),
-                  ),
-                  RaisedButton(
-                    elevation: 3.0,
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            titlePadding: const EdgeInsets.all(0.0),
-                            contentPadding: const EdgeInsets.all(0.0),
-                            content: SingleChildScrollView(
-                              child: MaterialPicker(
-                                pickerColor: done_color,
-                                onColorChanged: (Color color) => setState(() {
-                                  done_color = color;
-                                  saveColors();
-                                }),
-                                enableLabel: true,
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    child: const Text('Done'),
-                    color: done_color,
-                    textColor: useWhiteForeground(done_color)
-                        ? const Color(0xffffffff)
-                        : const Color(0xff000000),
-                  ),
+                  buildColorChooser(context, prioAColor, "Prio A", "prio_a_color"),
+                  //SizedBox(height: 10,),
+                  buildColorChooser(context, prioBColor, "Prio B", "prio_b_color"),
+                  //SizedBox(height: 10,),
+                  buildColorChooser(context, prioCColor, "Prio C", "prio_c_color"),
+                  buildColorChooser(context, doneColor, "Done", "done_color"),
                 ],
               ),
             ],
@@ -180,25 +71,87 @@ class _SettingsRouteState extends State<SettingsRoute> {
     );
   }
 
+  SizedBox buildColorChooser(BuildContext context, Color currentColor, String name, String storeKey) {
+    return SizedBox(
+                  width: 190,
+                  child: FittedBox(
+                    fit: BoxFit.fitWidth,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              titlePadding: const EdgeInsets.all(0.0),
+                              contentPadding: const EdgeInsets.all(0.0),
+                              content: SingleChildScrollView(
+                                child: MaterialPicker(
+                                  pickerColor: currentColor,
+                                  onColorChanged: (Color color) => setState(() {
+                                    currentColor = color;
+                                    saveColor(storeKey, currentColor);
+                                  }),
+                                  enableLabel: true,
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      child: Text(name),
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.resolveWith(
+                              (states) => currentColor),
+                          foregroundColor: MaterialStateProperty.resolveWith(
+                              (states) => useWhiteForeground(currentColor)
+                                  ? const Color(0xffffffff)
+                                  : const Color(0xff000000))),
+                    ),
+                  ),
+                );
+  }
+
   void loadColors() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-
-      prio_a_color = Color(prefs.getInt('prio_a_color') ?? Colors.red.value);
-      prio_b_color = Color(prefs.getInt('prio_b_color') ?? Colors.orange.value);
-      prio_c_color =
+      prioAColor = Color(prefs.getInt('prio_a_color') ?? Colors.red.value);
+      prioBColor = Color(prefs.getInt('prio_b_color') ?? Colors.orange.value);
+      prioCColor =
           Color(prefs.getInt('prio_c_color') ?? Colors.lightBlueAccent.value);
-      done_color = Color(prefs.getInt('done_color') ?? Colors.green.value);
+      doneColor = Color(prefs.getInt('done_color') ?? Colors.green.value);
     });
   }
 
   void saveColors() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt('prio_a_color', prio_a_color.value);
-    prefs.setInt('prio_b_color', prio_b_color.value);
-    prefs.setInt('prio_c_color', prio_c_color.value);
-    prefs.setInt('done_color', done_color.value);
+    prefs.setInt('prio_a_color', prioAColor.value);
+    prefs.setInt('prio_b_color', prioBColor.value);
+    prefs.setInt('prio_c_color', prioCColor.value);
+    prefs.setInt('done_color', doneColor.value);
+  }
+
+  void saveColor(String name, Color color) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt(name, color.value);
+
+    setState(() {
+      switch(name){
+        case 'prio_a_color':
+          prioAColor = color;
+          break;
+        case 'prio_b_color':
+          prioBColor = color;
+          break;
+        case 'prio_c_color':
+          prioCColor = color;
+          break;
+        case 'done_color':
+          doneColor = color;
+          break;
+      }
+
+    });
+
+
   }
 }
-
-

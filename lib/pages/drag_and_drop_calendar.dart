@@ -1,8 +1,6 @@
 ///Dart imports
 import 'dart:convert';
 
-import 'dart:math';
-
 ///Package imports
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -52,18 +50,17 @@ class _DragAndDropCalendarState extends SampleViewState {
   List<Items> users = [];
   bool loading = true;
 
-  Color prio_a_color = Colors.red;
-  Color prio_b_color = Colors.orange;
-  Color prio_c_color = Colors.lightBlueAccent;
-  Color done_color = Colors.green;
+  Color prioAColor = Colors.red;
+  Color prioBColor = Colors.orange;
+  Color prioCColor = Colors.lightBlueAccent;
+  Color doneColor = Colors.green;
 
   @override
   void initState() {
-    //loadItems();
+    ///loadItems();
     loadColors();
     _currentView = CalendarView.day;
     _calendarController.view = _currentView;
-    // Future future = getAppointmentDetails();
     loadMeetings();
     super.initState();
     WidgetsFlutterBinding.ensureInitialized();
@@ -71,13 +68,13 @@ class _DragAndDropCalendarState extends SampleViewState {
 
   @override
   Widget build(BuildContext context) {
-    if (loading) return CircularProgressIndicator();
+    if (loading) return const CircularProgressIndicator();
 
     final Widget calendar = Theme(
 
         /// The key set here to maintain the state,
         ///  when we change the parent of the widget
-        //key: _globalKey,
+        key: _globalKey,
         data: ThemeData.light(),
         child: _getDragAndDropCalendar(
             _calendarController, _events, _onViewChanged));
@@ -112,7 +109,6 @@ class _DragAndDropCalendarState extends SampleViewState {
   /// when the view changes from or to month view because month view placed
   /// on scroll view.
   void _onViewChanged(ViewChangedDetails viewChangedDetails) {
-    //loadItems();
     if (_currentView != CalendarView.month &&
         _calendarController.view != CalendarView.month) {
       _currentView = _calendarController.view!;
@@ -130,19 +126,17 @@ class _DragAndDropCalendarState extends SampleViewState {
   /// Creates the required appointment details as a list.
   List<Appointment> getAppointmentDetails() {
     final List<Appointment> appointments = <Appointment>[];
-
     DateTime today = DateTime.now();
+
+    /// 8 Am first Meeting
     DateTime nextMeeting =
         DateTime(today.year, today.month, today.day, 8, 0, 0);
 
     for (int i = 0; i < users.length; i++) {
-      //subjectCollection.add(users[i].name);
-      //colorCollection.add(get_my_color(users[i].prio, users[i].done));
-
+      ///duration of event
       users[i].time = users[i].time == 0 ? 60 : users[i].time;
-
       DateTime startDate;
-      // is item already place? -> use this time : else calculate last stop
+      /// is item already place? -> use this time : else calculate last stop
       if (users[i].placed) {
         startDate = DateTime.parse(users[i].start);
       } else {
@@ -151,12 +145,13 @@ class _DragAndDropCalendarState extends SampleViewState {
         users[i].placed = true;
       }
 
+      /// save beginning of Meeting
       users[i].start = startDate.toIso8601String();
       Appointment appointment = Appointment(
         subject: users[i].name,
         startTime: startDate,
         endTime: startDate.add(Duration(minutes: users[i].time)),
-        color: get_my_color(users[i].prio, users[i].done),
+        color: getMyColor(users[i].prio, users[i].done),
       );
 
       appointments.add(appointment);
@@ -191,20 +186,18 @@ class _DragAndDropCalendarState extends SampleViewState {
 
   Future<void> loadItems() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    List<String> users_string = prefs.getStringList('users') ?? [];
-
-    List<Items> user_list = [];
-    if (users_string != []) {
-      for (int i = 0; i < users_string.length; i++) {
-        Map<String, dynamic> map = jsonDecode(users_string[i]);
-        Items loaded_item = Items.fromJson(map);
-        //print("list $loaded_item");
-        user_list.add(loaded_item);
+    List<String> usersString = prefs.getStringList('users') ?? [];
+    List<Items> userList = [];
+    ///get every single item of the saved list and turn it into a user
+    if (usersString != []) {
+      for (int i = 0; i < usersString.length; i++) {
+        Map<String, dynamic> map = jsonDecode(usersString[i]);
+        Items loadedItem = Items.fromJson(map);
+        userList.add(loadedItem);
       }
     }
     setState(() {
-      users = user_list;
+      users = userList;
       loading = false;
     });
   }
@@ -229,32 +222,32 @@ class _DragAndDropCalendarState extends SampleViewState {
     saveItems(users);
   }
 
-  Color get_my_color(int prio, bool done) {
+  Color getMyColor(int prio, bool done) {
     loadColors();
     if (done) {
-      return done_color;
+      return doneColor;
     }
     switch (prio) {
       case 1:
-        return prio_a_color;
+        return prioAColor;
       case 2:
-        return prio_b_color;
+        return prioBColor;
       case 3:
-        return prio_c_color;
+        return prioCColor;
     }
 
     //if nothing fits
-    return prio_a_color;
+    return prioAColor;
   }
 
   void loadColors() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      prio_a_color = Color(prefs.getInt('prio_a_color') ?? Colors.red.value);
-      prio_b_color = Color(prefs.getInt('prio_b_color') ?? Colors.orange.value);
-      prio_c_color =
+      prioAColor = Color(prefs.getInt('prio_a_color') ?? Colors.red.value);
+      prioBColor = Color(prefs.getInt('prio_b_color') ?? Colors.orange.value);
+      prioCColor =
           Color(prefs.getInt('prio_c_color') ?? Colors.lightBlueAccent.value);
-      done_color = Color(prefs.getInt('done_color') ?? Colors.green.value);
+      doneColor = Color(prefs.getInt('done_color') ?? Colors.green.value);
     });
   }
 }
