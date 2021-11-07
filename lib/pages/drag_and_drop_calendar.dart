@@ -136,6 +136,7 @@ class _DragAndDropCalendarState extends SampleViewState {
       ///duration of event
       users[i].time = users[i].time == 0 ? 60 : users[i].time;
       DateTime startDate;
+
       /// is item already place? -> use this time : else calculate last stop
       if (users[i].placed) {
         startDate = DateTime.parse(users[i].start);
@@ -188,6 +189,7 @@ class _DragAndDropCalendarState extends SampleViewState {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> usersString = prefs.getStringList('users') ?? [];
     List<Items> userList = [];
+
     ///get every single item of the saved list and turn it into a user
     if (usersString != []) {
       for (int i = 0; i < usersString.length; i++) {

@@ -60,27 +60,38 @@ class _FirstScreenState extends State<FirstScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             //crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              const SizedBox(height: 100,),
+              const SizedBox(
+                height: 100,
+              ),
               SizedBox(
                   //decoration: BoxDecoration(border: Border.all(color: Colors.blue)),
-                height: 100,
+                  height: 100,
                   child: TextButton(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.grade, size: 80,),
-                        Text(score.toString(), style: const TextStyle(fontSize: 40),),
-
+                        const Icon(
+                          Icons.grade,
+                          size: 80,
+                        ),
+                        Text(
+                          score.toString(),
+                          style: const TextStyle(fontSize: 40),
+                        ),
                       ],
                     ),
                     onPressed: () {
                       getScore();
                     },
                   )),
-              const SizedBox(height: 70,),
+              const SizedBox(
+                height: 70,
+              ),
               buildCustomButton(context, "My Day", const DragAndDropCalendar()),
               buildCustomButton(context, "My Priorities", const PrioPage()),
-              const SizedBox(height: 70,),
+              const SizedBox(
+                height: 70,
+              ),
               buildCustomButton(context, "Completed", const CompletedPage()),
             ],
           ),

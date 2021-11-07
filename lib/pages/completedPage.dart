@@ -2,7 +2,6 @@
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:intl/intl.dart';
 import 'prio.dart';
 import 'package:flutter/material.dart';
 import '../model/items.dart';
@@ -48,11 +47,11 @@ class _CompletedPageState extends State<CompletedPage> {
                   ///scrollable list
                   child: ListView.separated(
                     shrinkWrap: true,
-                    separatorBuilder: (BuildContext context, int index) => Divider(),
+                    separatorBuilder: (BuildContext context, int index) =>
+                        const Divider(),
 
                     ///logic for reorder
                     itemCount: users.length,
-
 
                     itemBuilder: (context, index) {
                       final user = users[index];
@@ -62,30 +61,6 @@ class _CompletedPageState extends State<CompletedPage> {
                 ),
               ),
               //bottom box bellow the list -> you can scroll further up
-              Container(
-                height: 80,
-
-                color: lightTheme
-                    ? Theme.of(context).primaryColor
-                    : const Color(0xFF424242),
-                //color: ThemeData.,
-              ),
-            ],
-          ),
-
-          ///Buttons in bottom row
-          floatingActionButton: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              ///with sized box on the left the buttons are more in center
-
-              FloatingActionButton(
-                child: const Icon(Icons.shuffle),
-                heroTag: "reorder",
-                onPressed: orderList,
-              ),
-              const SizedBox(width: 30,)
             ],
           ),
         ),
@@ -97,52 +72,69 @@ class _CompletedPageState extends State<CompletedPage> {
     Color currentTextColor = getOppositeColor(currentColor);
 
     return ListTile(
-
       ///key needed for ListTile
       key: ValueKey(user),
       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       tileColor: currentColor,
-      title: Text(user.name, style: TextStyle(color:getOppositeColor(currentTextColor))),
+      title: Text(user.name,
+          style: TextStyle(color: getOppositeColor(currentTextColor))),
       trailing: Theme(
         data: ThemeData(hintColor: currentTextColor),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-
-
             ///duration
             Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(color: currentTextColor,border: Border.all(), borderRadius: BorderRadius.circular(360.0),),
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: currentTextColor,
+                border: Border.all(),
+                borderRadius: BorderRadius.circular(360.0),
+              ),
               child: FittedBox(
                 fit: BoxFit.fitHeight,
-                child: Center(child: Text(user.time.toString(), style: TextStyle(color:getOppositeColor(currentTextColor)))),
+                child: Center(
+                    child: Text(user.time.toString(),
+                        style: TextStyle(
+                            color: getOppositeColor(currentTextColor)))),
               ),
             ),
             const SizedBox(width: 10),
+
             ///Date
             Container(
-              padding: EdgeInsets.all(13),
-              decoration: BoxDecoration(color: currentTextColor,border: Border.all(), borderRadius: BorderRadius.circular(360.0),),
+              padding: const EdgeInsets.all(13),
+              decoration: BoxDecoration(
+                color: currentTextColor,
+                border: Border.all(),
+                borderRadius: BorderRadius.circular(360.0),
+              ),
               child: FittedBox(
                 fit: BoxFit.fitHeight,
-                child: Center(child: Text(user.start.substring(0, 10), style: TextStyle(color:getOppositeColor(currentTextColor)))),
+                child: Center(
+                    child: Text(user.start.substring(0, 10),
+                        style: TextStyle(
+                            color: getOppositeColor(currentTextColor)))),
               ),
             ),
             const SizedBox(width: 10),
-            ///Prio
-            ///
 
             Container(
-              padding: EdgeInsets.all(12),
-              decoration: BoxDecoration(color: currentTextColor,border: Border.all(), borderRadius: BorderRadius.circular(360.0),),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: currentTextColor,
+                border: Border.all(),
+                borderRadius: BorderRadius.circular(360.0),
+              ),
               child: FittedBox(
                 fit: BoxFit.fitWidth,
-                child: Center(child: Text(getPrioText(user.prio), style: TextStyle(color:getOppositeColor(currentTextColor)))),
+                child: Center(
+                    child: Text(getPrioText(user.prio),
+                        style: TextStyle(
+                            color: getOppositeColor(currentTextColor)))),
               ),
             ),
             const SizedBox(width: 5),
-
           ],
         ),
       ),
@@ -159,31 +151,34 @@ class _CompletedPageState extends State<CompletedPage> {
   }
 
   void orderList() => setState(() {
-    loadDoneItems();
+        //loadDoneItems();
+
         if (byDate) {
           users.sort((a, b) {
-            int compare = (a.prio.compareTo(b.prio));
+            int compare =
+                a.start.substring(0, 10).compareTo(b.start.substring(0, 10));
             if (compare == 0) {
-              return (a.done ? 1 : 0).compareTo(b.done ? 1 : 0);
+              return (a.prio).compareTo(b.prio);
             } else {
               return compare;
             }
           });
         } else {
           users.sort((a, b) {
-            int compare = (a.done ? 1 : 0).compareTo(b.done ? 1 : 0);
+            int compare = b.name.compareTo(a.name);
             if (compare == 0) {
-              return (a.prio.compareTo(b.prio));
+              return a.start
+                  .substring(0, 10)
+                  .compareTo(b.start.substring(0, 10));
             } else {
               return compare;
             }
           });
         }
         byDate = !byDate;
-
       });
 
-  void loadDoneItems() async{
+  void loadDoneItems() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> usersString = prefs.getStringList('done_items') ?? [];
     List<Items> userList = [];

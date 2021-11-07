@@ -56,11 +56,14 @@ class _SettingsRouteState extends State<SettingsRoute> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  buildColorChooser(context, prioAColor, "Prio A", "prio_a_color"),
+                  buildColorChooser(
+                      context, prioAColor, "Prio A", "prio_a_color"),
                   //SizedBox(height: 10,),
-                  buildColorChooser(context, prioBColor, "Prio B", "prio_b_color"),
+                  buildColorChooser(
+                      context, prioBColor, "Prio B", "prio_b_color"),
                   //SizedBox(height: 10,),
-                  buildColorChooser(context, prioCColor, "Prio C", "prio_c_color"),
+                  buildColorChooser(
+                      context, prioCColor, "Prio C", "prio_c_color"),
                   buildColorChooser(context, doneColor, "Done", "done_color"),
                 ],
               ),
@@ -71,44 +74,45 @@ class _SettingsRouteState extends State<SettingsRoute> {
     );
   }
 
-  SizedBox buildColorChooser(BuildContext context, Color currentColor, String name, String storeKey) {
+  SizedBox buildColorChooser(
+      BuildContext context, Color currentColor, String name, String storeKey) {
     return SizedBox(
-                  width: 190,
-                  child: FittedBox(
-                    fit: BoxFit.fitWidth,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              titlePadding: const EdgeInsets.all(0.0),
-                              contentPadding: const EdgeInsets.all(0.0),
-                              content: SingleChildScrollView(
-                                child: MaterialPicker(
-                                  pickerColor: currentColor,
-                                  onColorChanged: (Color color) => setState(() {
-                                    currentColor = color;
-                                    saveColor(storeKey, currentColor);
-                                  }),
-                                  enableLabel: true,
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                      child: Text(name),
-                      style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.resolveWith(
-                              (states) => currentColor),
-                          foregroundColor: MaterialStateProperty.resolveWith(
-                              (states) => useWhiteForeground(currentColor)
-                                  ? const Color(0xffffffff)
-                                  : const Color(0xff000000))),
+      width: 190,
+      child: FittedBox(
+        fit: BoxFit.fitWidth,
+        child: ElevatedButton(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  titlePadding: const EdgeInsets.all(0.0),
+                  contentPadding: const EdgeInsets.all(0.0),
+                  content: SingleChildScrollView(
+                    child: MaterialPicker(
+                      pickerColor: currentColor,
+                      onColorChanged: (Color color) => setState(() {
+                        currentColor = color;
+                        saveColor(storeKey, currentColor);
+                      }),
+                      enableLabel: true,
                     ),
                   ),
                 );
+              },
+            );
+          },
+          child: Text(name),
+          style: ButtonStyle(
+              backgroundColor:
+                  MaterialStateProperty.resolveWith((states) => currentColor),
+              foregroundColor: MaterialStateProperty.resolveWith((states) =>
+                  useWhiteForeground(currentColor)
+                      ? const Color(0xffffffff)
+                      : const Color(0xff000000))),
+        ),
+      ),
+    );
   }
 
   void loadColors() async {
@@ -135,7 +139,7 @@ class _SettingsRouteState extends State<SettingsRoute> {
     prefs.setInt(name, color.value);
 
     setState(() {
-      switch(name){
+      switch (name) {
         case 'prio_a_color':
           prioAColor = color;
           break;
@@ -149,9 +153,6 @@ class _SettingsRouteState extends State<SettingsRoute> {
           doneColor = color;
           break;
       }
-
     });
-
-
   }
 }
