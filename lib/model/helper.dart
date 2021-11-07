@@ -98,7 +98,7 @@ class _FullViewSampleLayout extends StatelessWidget {
                                       Padding(
                                         padding: const EdgeInsets.fromLTRB(
                                             0, 0, 8, 0),
-                                        child: Container(
+                                        child: SizedBox(
                                           height: 37,
                                           width: 37,
                                           child: IconButton(
@@ -116,7 +116,7 @@ class _FullViewSampleLayout extends StatelessWidget {
                                     Padding(
                                       padding: const EdgeInsets.fromLTRB(
                                           0, 0, 10, 0),
-                                      child: Container(
+                                      child: SizedBox(
                                         height: 40,
                                         width: 40,
                                         child: IconButton(
@@ -136,7 +136,7 @@ class _FullViewSampleLayout extends StatelessWidget {
                                         Padding(
                                           padding: const EdgeInsets.fromLTRB(
                                               0, 0, 8, 0),
-                                          child: Container(
+                                          child: SizedBox(
                                             height: 37,
                                             width: 37,
                                             child: IconButton(
@@ -175,7 +175,7 @@ class _FullViewSampleLayout extends StatelessWidget {
                                   child: Container(
                                     padding: EdgeInsets.fromLTRB(
                                         30, needPadding ? 50 : 0, 0, 0),
-                                    child: Container(
+                                    child: SizedBox(
                                       height: 20,
                                       width: 230,
                                       child: InkWell(
@@ -446,10 +446,8 @@ Widget getLeftSideDrawer(SampleModel _model) {
                                                       fontWeight:
                                                           FontWeight.normal))),
                                           const Spacer(),
-                                          Container(
-                                            child: Icon(Icons.arrow_forward,
-                                                color: _model.backgroundColor),
-                                          ),
+                                          Icon(Icons.arrow_forward,
+                                              color: _model.backgroundColor),
                                         ],
                                       ),
                                       const Padding(
@@ -495,10 +493,8 @@ Widget getLeftSideDrawer(SampleModel _model) {
                                                         FontWeight.normal)),
                                           ),
                                           const Spacer(),
-                                          Container(
-                                            child: Icon(Icons.arrow_forward,
-                                                color: _model.backgroundColor),
-                                          ),
+                                          Icon(Icons.arrow_forward,
+                                              color: _model.backgroundColor),
                                         ],
                                       ),
                                       const Padding(
@@ -544,10 +540,8 @@ Widget getLeftSideDrawer(SampleModel _model) {
                                                         FontWeight.normal)),
                                           ),
                                           const Spacer(),
-                                          Container(
-                                            child: Icon(Icons.arrow_forward,
-                                                color: _model.backgroundColor),
-                                          ),
+                                          Icon(Icons.arrow_forward,
+                                              color: _model.backgroundColor),
                                         ],
                                       ),
                                       const Padding(
@@ -616,56 +610,55 @@ Widget getFooter(BuildContext context, SampleModel model) {
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Container(
-            child: Column(
+        Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Row(
-              children: <Widget>[
-                InkWell(
-                  onTap: () => launch(
-                      'https://help.syncfusion.com/flutter/introduction/overview'),
-                  child: const Text('Documentation',
-                      style: TextStyle(color: Colors.blue, fontSize: 12)),
-                ),
-                Text(' | ',
-                    style: TextStyle(
-                        fontSize: 12, color: model.textColor.withOpacity(0.7))),
-                InkWell(
-                  onTap: () =>
-                      launch('https://www.syncfusion.com/forums/flutter'),
-                  child: const Text('Forum',
-                      style: TextStyle(color: Colors.blue, fontSize: 12)),
-                ),
-                Text(' | ',
-                    style: TextStyle(
-                        fontSize: 12, color: model.textColor.withOpacity(0.7))),
-                InkWell(
-                  onTap: () =>
-                      launch('https://www.syncfusion.com/blogs/?s=flutter'),
-                  child: const Text('Blog',
-                      style: TextStyle(color: Colors.blue, fontSize: 12)),
-                ),
-                Text(' | ',
-                    style: TextStyle(
-                        fontSize: 12, color: model.textColor.withOpacity(0.7))),
-                InkWell(
-                  onTap: () => launch('https://www.syncfusion.com/kb/flutter'),
-                  child: const Text('Knowledge base',
-                      style: TextStyle(color: Colors.blue, fontSize: 12)),
-                )
-              ],
+        Row(
+          children: <Widget>[
+            InkWell(
+              onTap: () => launch(
+                  'https://help.syncfusion.com/flutter/introduction/overview'),
+              child: const Text('Documentation',
+                  style: TextStyle(color: Colors.blue, fontSize: 12)),
             ),
-            Container(
-                padding: const EdgeInsets.only(top: 10),
-                child: Text('Copyright © 2001 - 2021 Syncfusion Inc.',
-                    style: TextStyle(
-                        color: model.textColor.withOpacity(0.7),
-                        fontSize: 12,
-                        letterSpacing: 0.23)))
+            Text(' | ',
+                style: TextStyle(
+                    fontSize: 12, color: model.textColor.withOpacity(0.7))),
+            InkWell(
+              onTap: () =>
+                  launch('https://www.syncfusion.com/forums/flutter'),
+              child: const Text('Forum',
+                  style: TextStyle(color: Colors.blue, fontSize: 12)),
+            ),
+            Text(' | ',
+                style: TextStyle(
+                    fontSize: 12, color: model.textColor.withOpacity(0.7))),
+            InkWell(
+              onTap: () =>
+                  launch('https://www.syncfusion.com/blogs/?s=flutter'),
+              child: const Text('Blog',
+                  style: TextStyle(color: Colors.blue, fontSize: 12)),
+            ),
+            Text(' | ',
+                style: TextStyle(
+                    fontSize: 12, color: model.textColor.withOpacity(0.7))),
+            InkWell(
+              onTap: () => launch('https://www.syncfusion.com/kb/flutter'),
+              child: const Text('Knowledge base',
+                  style: TextStyle(color: Colors.blue, fontSize: 12)),
+            )
           ],
-        )),
+        ),
+        Container(
+            padding: const EdgeInsets.only(top: 10),
+            child: Text('Copyright © 2001 - 2021 Syncfusion Inc.',
+                style: TextStyle(
+                    color: model.textColor.withOpacity(0.7),
+                    fontSize: 12,
+                    letterSpacing: 0.23)))
+          ],
+        ),
         InkWell(
           onTap: () => launch('https://www.syncfusion.com'),
           child: Image.asset(
@@ -929,14 +922,14 @@ void showBottomSettingsPanel(SampleModel model, BuildContext context) {
   showRoundedModalBottomSheet<dynamic>(
       context: context,
       color: model.bottomSheetBackgroundColor,
-      builder: (BuildContext context) => Container(
+      builder: (BuildContext context) => SizedBox(
           height: 250,
           child: Column(
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 5, 0, 0),
                 child: Stack(children: <Widget>[
-                  Container(
+                  SizedBox(
                     height: 40,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -1035,43 +1028,41 @@ void showBottomSettingsPanel(SampleModel model, BuildContext context) {
                       padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                       child: MediaQuery.of(context).orientation ==
                               Orientation.portrait
-                          ? Container(
-                              child: Row(
-                              children: <Widget>[
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        15, 0, 10, 30),
-                                    child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: _addColorPalettes(model)),
-                                  ),
-                                ),
-                              ],
-                            ))
-                          : Container(
-                              child: Row(
-                              children: <Widget>[
-                                Expanded(
-                                  child: Padding(
-                                    padding: EdgeInsets.fromLTRB(
-                                        _orientationPadding + 10,
-                                        0,
-                                        _orientationPadding + 10,
-                                        30),
-                                    child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: _addColorPalettes(model)),
-                                  ),
-                                ),
-                              ],
-                            )),
+                          ? Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    15, 0, 10, 30),
+                                child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: _addColorPalettes(model)),
+                              ),
+                            ),
+                          ],
+                            )
+                          : Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.fromLTRB(
+                                    _orientationPadding + 10,
+                                    0,
+                                    _orientationPadding + 10,
+                                    30),
+                                child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: _addColorPalettes(model)),
+                              ),
+                            ),
+                          ],
+                            ),
                     ),
                   ],
                 ),
@@ -1141,7 +1132,7 @@ void showBottomSheetSettingsPanel(BuildContext context, Widget propertyWidget) {
 ///To show the sample description in the bottom sheet
 void showBottomInfo(BuildContext context, String information) {
   final SampleModel _model = SampleModel.instance;
-  if (information != null && information != '') {
+  if (information != '') {
     showRoundedModalBottomSheet<dynamic>(
         context: context,
         color: _model.bottomSheetBackgroundColor,

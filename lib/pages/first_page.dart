@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:king_of_live/pages/drag_and_drop_calendar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../pages/prio.dart';
 import '../pages/settings.dart';
-
-
 
 class FirstScreen extends StatefulWidget {
   const FirstScreen({Key? key}) : super(key: key);
@@ -14,8 +13,11 @@ class FirstScreen extends StatefulWidget {
 
 class _FirstScreenState extends State<FirstScreen> {
   bool lightTheme = false;
+
+  int score = 0;
+
   @override
-  void initState(){
+  void initState() {
     super.initState();
   }
 
@@ -53,12 +55,29 @@ class _FirstScreenState extends State<FirstScreen> {
         ),
         body: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             //crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+              const SizedBox(height: 100,),
+              SizedBox(
+                  //decoration: BoxDecoration(border: Border.all(color: Colors.blue)),
+                height: 100,
+                  child: TextButton(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.grade, size: 80,),
+                        Text(score.toString(), style: const TextStyle(fontSize: 40),),
+
+                      ],
+                    ),
+                    onPressed: () {
+                      getScore();
+                    },
+                  )),
+              const SizedBox(height: 70,),
               buildCustomButton(context, "My Priorities", const PrioPage()),
               buildCustomButton(context, "My day", const DragAndDropCalendar()),
-
             ],
           ),
         ),
@@ -66,24 +85,24 @@ class _FirstScreenState extends State<FirstScreen> {
     );
   }
 
-
-  SizedBox buildCustomButton(BuildContext context, String name, dynamic nextPage) {
+  SizedBox buildCustomButton(
+      BuildContext context, String name, dynamic nextPage) {
     return SizedBox(
       height: 80,
       child: FittedBox(
         fit: BoxFit.fitHeight,
         child: ElevatedButton(
-                  child: Text(
-                    name,
-                    style: const TextStyle(fontSize: 30),
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => nextPage),
-                    );
-                  },
-                ),
+          child: Text(
+            name,
+            style: const TextStyle(fontSize: 30),
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => nextPage),
+            );
+          },
+        ),
       ),
     );
   }
@@ -96,5 +115,12 @@ class _FirstScreenState extends State<FirstScreen> {
         );
         break;
     }
+  }
+
+  void getScore() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      score = prefs.getInt('score') ?? 0;
+    });
   }
 }

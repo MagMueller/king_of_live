@@ -155,9 +155,9 @@ class _PrioPageState extends State<PrioPage> {
             ///Text field for task time
             SizedBox(
               width: 30,
-              height: 40,
+              height: 60,
               child: Container(
-                alignment: Alignment.bottomCenter,
+                alignment: Alignment.bottomLeft,
                 child: TextField(
                   style: TextStyle(color: currentTextColor),
                   textAlign: TextAlign.center,
@@ -175,6 +175,7 @@ class _PrioPageState extends State<PrioPage> {
                 ),
               ),
             ),
+            const SizedBox(width: 4),
 
             ///Prio Button
             ElevatedButton(
@@ -207,6 +208,8 @@ class _PrioPageState extends State<PrioPage> {
               },
             ),
             IconButton(
+              alignment: Alignment.centerRight,
+              //padding: EdgeInsets.symmetric(vertical: 20, horizontal: 0),
               iconSize: 22,
               icon: Icon(Icons.edit, color: currentTextColor),
               onPressed: () => edit(index),
@@ -269,23 +272,6 @@ class _PrioPageState extends State<PrioPage> {
             }
           });
         }
-
-        /**
-            List<Items> prioA = [];
-            List<Items> prioB = [];
-            List<Items> prioC = [];
-            for (int i = 0; i < users.length; i++) {
-            if (users[i].prio == 1) {
-            prioA.add(users[i]);
-            } else if (users[i].prio == 2) {
-            prioB.add(users[i]);
-            } else if (users[i].prio == 3) {
-            prioC.add(users[i]);
-            }
-            }
-            users = [...prioA, ...prioB, ...prioC];
-
-         **/
         donesBellowEveryItems = !donesBellowEveryItems;
         saveItems(users);
       });
@@ -330,11 +316,24 @@ class _PrioPageState extends State<PrioPage> {
     );
   }
 
-  done(int index) {
+  void done(int index) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int score = prefs.getInt('score') ?? 0;
+
+
     setState(() {
       users[index].done = !users[index].done;
-      saveItems(users);
     });
+
+    if(users[index].done){
+      /// increase score
+      score += 4 - users[index].prio;
+    } else{
+      /// decrease score
+      score -= 4 - users[index].prio;
+    }
+    saveItems(users);
+    prefs.setInt('score', score);
   }
 
   deleteAllItems() {

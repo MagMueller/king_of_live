@@ -209,7 +209,7 @@ class _LayoutPageState extends State<LayoutPage> {
                                 child: Padding(
                                   padding:
                                       const EdgeInsets.fromLTRB(0, 0, 8, 0),
-                                  child: Container(
+                                  child: SizedBox(
                                     height: 37,
                                     width: 37,
                                     child: IconButton(
@@ -234,7 +234,7 @@ class _LayoutPageState extends State<LayoutPage> {
                                 child: Padding(
                                   padding:
                                       const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                                  child: Container(
+                                  child: SizedBox(
                                     height: 40,
                                     width: 40,
                                     child: IconButton(
@@ -370,7 +370,7 @@ class _LayoutPageState extends State<LayoutPage> {
                       alignment: Alignment.bottomLeft,
                       child: Container(
                         padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
-                        child: Container(
+                        child: SizedBox(
                           height: 30,
                           width: 230,
                           child: InkWell(
@@ -476,64 +476,61 @@ class _LayoutPageState extends State<LayoutPage> {
                                         color: model.textColor,
                                         letterSpacing: 0.2),
                                   ),
-                                  Container(
-                                      child: Row(
+                                  Row(
                                     children: <Widget>[
-                                      Container(
-                                          decoration: BoxDecoration(
-                                              color: (_status != null && _status != '')
-                                                  ? (_status == 'New' ||
-                                                          _status == 'new'
-                                                      ? const Color.fromRGBO(
-                                                          55, 153, 30, 1)
-                                                      : const Color.fromRGBO(
-                                                          246, 117, 0, 1))
-                                                  : Colors.transparent,
-                                              shape: BoxShape.rectangle,
-                                              borderRadius: const BorderRadius.all(
-                                                  Radius.circular(10.0))),
-                                          padding: const EdgeInsets.fromLTRB(
-                                              5, 2.7, 5, 2.7),
-                                          child: Text(
-                                              (_status == 'New' ||
-                                                      _status == 'new')
-                                                  ? 'New'
-                                                  : (_status == 'Updated' ||
-                                                          _status == 'updated')
-                                                      ? 'Updated'
-                                                      : '',
-                                              style: const TextStyle(fontSize: 12, color: Colors.white))),
-                                      const Padding(
-                                        padding: EdgeInsets.only(left: 15),
-                                      ),
-                                      Container(
-                                        height: 24,
-                                        width: 24,
-                                        color: Colors.transparent,
-                                        child: Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              5, 0, 5, 5),
-                                          child: Image.asset(
-                                              'images/fullscreen.png',
-                                              fit: BoxFit.contain,
-                                              height: 20,
-                                              width: 20,
-                                              color: model.backgroundColor),
-                                        ),
-                                      ),
+                                  Container(
+                                      decoration: BoxDecoration(
+                                          color: (_status != null && _status != '')
+                                              ? (_status == 'New' ||
+                                                      _status == 'new'
+                                                  ? const Color.fromRGBO(
+                                                      55, 153, 30, 1)
+                                                  : const Color.fromRGBO(
+                                                      246, 117, 0, 1))
+                                              : Colors.transparent,
+                                          shape: BoxShape.rectangle,
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(10.0))),
+                                      padding: const EdgeInsets.fromLTRB(
+                                          5, 2.7, 5, 2.7),
+                                      child: Text(
+                                          (_status == 'New' ||
+                                                  _status == 'new')
+                                              ? 'New'
+                                              : (_status == 'Updated' ||
+                                                      _status == 'updated')
+                                                  ? 'Updated'
+                                                  : '',
+                                          style: const TextStyle(fontSize: 12, color: Colors.white))),
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 15),
+                                  ),
+                                  Container(
+                                    height: 24,
+                                    width: 24,
+                                    color: Colors.transparent,
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          5, 0, 5, 5),
+                                      child: Image.asset(
+                                          'images/fullscreen.png',
+                                          fit: BoxFit.contain,
+                                          height: 20,
+                                          width: 20,
+                                          color: model.backgroundColor),
+                                    ),
+                                  ),
                                     ],
-                                  )),
+                                  ),
                                 ]),
                           ),
                         ),
-                        Container(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                            child: SizedBox(
-                                width: double.infinity,
-                                height: 230,
-                                child: _sampleView),
-                          ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                          child: SizedBox(
+                              width: double.infinity,
+                              height: 230,
+                              child: _sampleView),
                         ),
                       ],
                     ),

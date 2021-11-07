@@ -402,7 +402,7 @@ import 'samples/xlsio/yearly_sales/yearly_sales.dart';
 Map<String, Function> getSampleWidget() {
   return <String, Function>{
     // cartesian charts
-    'drag_and_drop_calendar': (Key key) => DragAndDropCalendar(),
+    'drag_and_drop_calendar': (Key key) => const DragAndDropCalendar(),
 
 
     /**

@@ -155,7 +155,7 @@ class _DragAndDropCalendarState extends SampleViewState {
       );
 
       appointments.add(appointment);
-      users[i].my_id = appointment.id as int;
+      users[i].myId = appointment.id as int;
     }
     saveItems(users);
     return appointments;
@@ -214,7 +214,7 @@ class _DragAndDropCalendarState extends SampleViewState {
 
     // change the time of the moved appointment
     for (int i = 0; i < users.length; i++) {
-      if (users[i].my_id == appointment.id) {
+      if (users[i].myId == appointment.id) {
         users[i].start = appointment.startTime.toIso8601String();
         break;
       }
