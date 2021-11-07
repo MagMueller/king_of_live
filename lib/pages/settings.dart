@@ -11,7 +11,7 @@ class SettingsRoute extends StatefulWidget {
 }
 
 class _SettingsRouteState extends State<SettingsRoute> {
-  bool lightTheme = true;
+  bool lightTheme = false;
 
   //Color currentColor = Colors.limeAccent;
   Color prioAColor = Colors.red;
