@@ -320,15 +320,15 @@ class _PrioPageState extends State<PrioPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int score = prefs.getInt('score') ?? 0;
 
-
     setState(() {
       users[index].done = !users[index].done;
     });
 
-    if(users[index].done){
+    if (users[index].done) {
       /// increase score
       score += 4 - users[index].prio;
-    } else{
+      safeItem(users[index]);
+    } else {
       /// decrease score
       score -= 4 - users[index].prio;
     }
@@ -343,9 +343,9 @@ class _PrioPageState extends State<PrioPage> {
     saveItems(users);
   }
 
-  Future<void> loadItems() async {
+  Future<void> loadItems({String key = 'users'}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> usersString = prefs.getStringList('users') ?? [];
+    List<String> usersString = prefs.getStringList(key) ?? [];
     List<Items> userList = [];
 
     ///get every single item of the saved list and turn it into a user
@@ -388,6 +388,28 @@ class _PrioPageState extends State<PrioPage> {
     //if nothing fits
     return prioAColor;
   }
+
+  void safeItem(Items doneItem) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> usersString = prefs.getStringList('done_items') ?? [];
+    List<Items> userList = [];
+
+    ///get every single item of the saved list and turn it into a user
+    if (usersString != []) {
+      for (int i = 0; i < usersString.length; i++) {
+        Map<String, dynamic> map = jsonDecode(usersString[i]);
+        final loadedItem = Items.fromJson(map);
+        userList.add(loadedItem);
+      }
+    }
+
+    ///append done item
+    userList.add(doneItem);
+    saveItems(userList, key: 'done_items');
+
+    ///safe list
+    ///
+  }
 }
 
 Color getOppositeColor(Color currentColor) {
@@ -398,7 +420,7 @@ Color getOppositeColor(Color currentColor) {
   return currentTextColor;
 }
 
-saveItems(List<Items> users) async {
+saveItems(List<Items> users, {String key = 'users'}) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
   List<String> usersStrings = [];
@@ -406,5 +428,5 @@ saveItems(List<Items> users) async {
     usersStrings.add(jsonEncode(users[i]));
   }
   //print("This will be saved: $users_strings");
-  prefs.setStringList('users', usersStrings);
+  prefs.setStringList(key, usersStrings);
 }

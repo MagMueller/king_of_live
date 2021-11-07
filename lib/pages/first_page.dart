@@ -3,6 +3,7 @@ import 'package:king_of_live/pages/drag_and_drop_calendar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../pages/prio.dart';
 import '../pages/settings.dart';
+import '../pages/completedPage.dart';
 
 class FirstScreen extends StatefulWidget {
   const FirstScreen({Key? key}) : super(key: key);
@@ -19,6 +20,7 @@ class _FirstScreenState extends State<FirstScreen> {
   @override
   void initState() {
     super.initState();
+    getScore();
   }
 
   @override
@@ -76,8 +78,10 @@ class _FirstScreenState extends State<FirstScreen> {
                     },
                   )),
               const SizedBox(height: 70,),
+              buildCustomButton(context, "My Day", const DragAndDropCalendar()),
               buildCustomButton(context, "My Priorities", const PrioPage()),
-              buildCustomButton(context, "My day", const DragAndDropCalendar()),
+              const SizedBox(height: 70,),
+              buildCustomButton(context, "Completed", const CompletedPage()),
             ],
           ),
         ),
