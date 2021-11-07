@@ -20,7 +20,8 @@ import 'prio.dart';
 /// Widget of getting started calendar
 class DragAndDropCalendar extends SampleView {
   /// Creates default getting started calendar
-  const DragAndDropCalendar({Key? key}) : super(key: key);
+  //final bool reloaded;
+  const DragAndDropCalendar({bool? reloaded,  Key? key}) : super(key: key);
 
   @override
   _DragAndDropCalendarState createState() => _DragAndDropCalendarState();
@@ -51,14 +52,19 @@ class _DragAndDropCalendarState extends SampleViewState {
   List<Items> users = [];
   bool loading = true;
 
+  Color prio_a_color = Colors.red;
+  Color prio_b_color = Colors.orange;
+  Color prio_c_color = Colors.lightBlueAccent;
+  Color done_color = Colors.green;
+
   @override
   void initState() {
     //loadItems();
+    loadColors();
     _currentView = CalendarView.day;
     _calendarController.view = _currentView;
     // Future future = getAppointmentDetails();
     loadMeetings();
-
     super.initState();
     WidgetsFlutterBinding.ensureInitialized();
   }
@@ -123,9 +129,6 @@ class _DragAndDropCalendarState extends SampleViewState {
 
   /// Creates the required appointment details as a list.
   List<Appointment> getAppointmentDetails() {
-    final List<String> subjectCollection = <String>[];
-    final List<Color> colorCollection = <Color>[];
-
     final List<Appointment> appointments = <Appointment>[];
 
     //sort user by start time
@@ -147,6 +150,7 @@ class _DragAndDropCalendarState extends SampleViewState {
       // is item already place? -> use this time : else calculate last stop
       if (users[i].placed) {
         startDate = DateTime.parse(users[i].start);
+        print(users[i].name);
       } else {
         startDate = nextMeeting;
         nextMeeting = startDate.add(Duration(minutes: users[i].time));
@@ -193,7 +197,6 @@ class _DragAndDropCalendarState extends SampleViewState {
 
   Future<void> loadItems() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    print("Started");
 
     List<String> users_string = prefs.getStringList('users') ?? [];
 
@@ -228,14 +231,48 @@ class _DragAndDropCalendarState extends SampleViewState {
 
     // change the time of the moved appointment
     for(int i = 0; i < users.length; i++){
-      print("appointment ${appointment.id}");
+      //print("appointment ${appointment.id}");
       if(users[i].my_id == appointment.id){
+        print("appointment ${appointment.id}");
+
         users[i].start = appointment.startTime.toIso8601String();
+        print(users[i].start);
         break;
       }
     }
+    saveItems(users);
 
   }
+  Color get_my_color(int prio, bool done) {
+    loadColors();
+    if (done) {
+      return done_color;
+    }
+    switch (prio) {
+      case 1:
+        return prio_a_color;
+      case 2:
+        return prio_b_color;
+      case 3:
+        return prio_c_color;
+    }
+
+    //if nothing fits
+    return prio_a_color;
+  }
+
+  void loadColors() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      prio_a_color = Color(prefs.getInt('prio_a_color') ?? Colors.red.value);
+      prio_b_color = Color(prefs.getInt('prio_b_color') ?? Colors.orange.value);
+      prio_c_color =
+          Color(prefs.getInt('prio_c_color') ?? Colors.lightBlueAccent.value);
+      done_color = Color(prefs.getInt('done_color') ?? Colors.green.value);
+    });
+  }
+
+
 }
 
 class _DataSource extends CalendarDataSource {

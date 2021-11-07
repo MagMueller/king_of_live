@@ -15,13 +15,16 @@ class _PrioPageState extends State<PrioPage> {
   List<Items> users = [];
   List<bool> isSelected = [true, false, false];
   final TextEditingController _textFieldController = TextEditingController();
-
-  final _controller = TextEditingController();
+  Color prio_a_color = Colors.red;
+  Color prio_b_color = Colors.orange;
+  Color prio_c_color = Colors.lightBlueAccent;
+  Color done_color = Colors.green;
 
   @override
   void initState() {
     super.initState();
     loadItems();
+    loadColors();
   }
 
   @override
@@ -68,12 +71,10 @@ class _PrioPageState extends State<PrioPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>  DragAndDropCalendar()),
-                    ).then(
-                            (context) {
-                          loadItems();
-                        }
-                    );
+                          builder: (context) => DragAndDropCalendar(reloaded: true,)),
+                    ).then((context) {
+                      loadItems();
+                    });
                   },
                   child: Icon(Icons.calendar_today)),
             ),
@@ -103,7 +104,6 @@ class _PrioPageState extends State<PrioPage> {
                 //padding: EdgeInsets.only(top: 9.0),
                 alignment: Alignment.bottomCenter,
                 child: TextField(
-
                   textAlign: TextAlign.center,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
@@ -207,8 +207,6 @@ class _PrioPageState extends State<PrioPage> {
         saveItems(users);
       });
 
-
-
   String get_prio_text(int prio) {
     List<String> prios = ["A", "B", "C"];
     if (prio <= 3 && prio >= 1) {
@@ -219,7 +217,7 @@ class _PrioPageState extends State<PrioPage> {
   }
 
   _addTodoItem(String name) => setState(() {
-        users.add(Items(name: name )); //start: DateTime.now().toIso8601String()
+        users.add(Items(name: name)); //start: DateTime.now().toIso8601String()
         saveItems(users);
       });
 
@@ -263,8 +261,6 @@ class _PrioPageState extends State<PrioPage> {
     saveItems(users);
   }
 
-
-
   Future<void> loadItems() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     print("Started");
@@ -287,20 +283,36 @@ class _PrioPageState extends State<PrioPage> {
       users = user_list;
     });
   }
-}
-Color get_my_color(int prio, bool done) {
-  if (done) {
-    return Colors.green;
-  } else if (prio == 1) {
-    return Colors.red;
-  } else if (prio == 2) {
-    return Colors.orange;
-  } else if (prio == 3) {
-    return Colors.yellow;
-  } else
-    return Colors.pink;
-}
 
+  void loadColors() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      prio_a_color = Color(prefs.getInt('prio_a_color') ?? Colors.red.value);
+      prio_b_color = Color(prefs.getInt('prio_b_color') ?? Colors.orange.value);
+      prio_c_color =
+          Color(prefs.getInt('prio_c_color') ?? Colors.lightBlueAccent.value);
+      done_color = Color(prefs.getInt('done_color') ?? Colors.green.value);
+    });
+  }
+
+  Color get_my_color(int prio, bool done) {
+    loadColors();
+    if (done) {
+      return done_color;
+    }
+    switch (prio) {
+      case 1:
+        return prio_a_color;
+      case 2:
+        return prio_b_color;
+      case 3:
+        return prio_c_color;
+    }
+
+    //if nothing fits
+    return prio_a_color;
+  }
+}
 
 saveItems(List<Items> users) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
