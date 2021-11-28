@@ -128,9 +128,10 @@ class _DragAndDropCalendarState extends SampleViewState {
     final List<Appointment> appointments = <Appointment>[];
     DateTime today = DateTime.now();
 
-    /// 8 Am first Meeting
-    DateTime nextMeeting =
-        DateTime(today.year, today.month, today.day, 8, 0, 0);
+    /// first Meeting now
+    DateTime nextMeeting = today;
+
+    //DateTime(today.year, today.month, today.day, 8, 0, 0);
 
     for (int i = 0; i < users.length; i++) {
       ///duration of event
@@ -141,9 +142,15 @@ class _DragAndDropCalendarState extends SampleViewState {
       if (users[i].placed) {
         startDate = DateTime.parse(users[i].start);
       } else {
-        startDate = nextMeeting;
-        nextMeeting = startDate.add(Duration(minutes: users[i].time));
-        users[i].placed = true;
+        /// just calculate new place, if it is not done
+        if (!users[i].done) {
+          startDate = nextMeeting;
+          nextMeeting = startDate.add(Duration(minutes: users[i].time));
+          users[i].placed = true;
+        } else{
+          /// skip done
+          continue;
+        }
       }
 
       /// save beginning of Meeting
