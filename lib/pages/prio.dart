@@ -4,6 +4,8 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import '../model/items.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'drag_and_drop_calendar.dart';
+import 'package:duration_picker/duration_picker.dart';
+//import 'package:duration_picker_dialog_box/duration_picker_dialog_box.dart';
 
 class PrioPage extends StatefulWidget {
   const PrioPage({Key? key}) : super(key: key);
@@ -22,6 +24,7 @@ class _PrioPageState extends State<PrioPage> {
   Color prioBColor = Colors.purpleAccent;
   Color prioCColor = Colors.blueAccent;
   Color doneColor = Colors.green;
+  Duration _duration = Duration(hours: 0, minutes: 30);
 
   bool donesBellowEveryItems = false;
 
@@ -164,28 +167,10 @@ class _PrioPageState extends State<PrioPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ///Text field for task time
-            SizedBox(
-              width: 30,
-              height: 60,
-              child: Container(
-                alignment: Alignment.bottomLeft,
-                child: TextField(
-                  style: TextStyle(color: currentTextColor),
-                  textAlign: TextAlign.center,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    hintText: user.time.toString(),
-                    border: InputBorder.none,
-                  ),
-                  onChanged: (String time) {
-                    setState(() {
-                      user.time = int.parse(time);
-                      saveItems(users);
-                    });
-                  },
-                ),
-              ),
-            ),
+
+            buildBuilderDurationPicker(user, currentColor),
+
+            //TextButton(onPressed: () => openDurationPicker, child: Text(user.time.toString())),
             const SizedBox(width: 4),
 
             ///Prio Button
@@ -238,6 +223,38 @@ class _PrioPageState extends State<PrioPage> {
         ),
       ),
     );
+  }
+
+  /// Time Picker Duration Button
+  Builder buildBuilderDurationPicker(Items user, Color currentColor) {
+    return Builder(
+        builder: (BuildContext context) => ElevatedButton(
+              style: ButtonStyle(
+                  minimumSize: MaterialStateProperty.resolveWith(
+                      (states) => const Size(1, 40)),
+                  backgroundColor: MaterialStateProperty.resolveWith(
+                      (states) => currentColor),
+
+                  ///backgroundColor: get_my_color(user.prio, user.done),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(700.0),
+                          side: BorderSide(color: currentColor, width: 10.0)))),
+              onPressed: () async {
+                var resultingDuration = await showDurationPicker(
+                  context: context,
+                  initialTime: Duration(minutes: user.time),
+                );
+
+                if (resultingDuration != null) {
+                  user.time = resultingDuration.inMinutes;
+                  saveItems(users);
+                }
+              },
+              child: Text(
+                user.time.toString(),
+              ),
+            ));
   }
 
   void remove(int index) => setState(() {
@@ -303,7 +320,7 @@ class _PrioPageState extends State<PrioPage> {
 
   Future<void> _addNewItem() async {
     int currentPrio = 3;
-    List<bool> isSelected = [false,false,true];
+    List<bool> isSelected = [false, false, true];
 
     return showDialog<void>(
       context: context,
@@ -312,59 +329,62 @@ class _PrioPageState extends State<PrioPage> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-            title: const Text('Add a new todo item'),
-            content: TextField(
-              onSubmitted: (newTodo) => onFinishSubmitted(currentPrio),
-              autofocus: true,
-              controller: _textFieldController,
-              decoration: const InputDecoration(hintText: 'Type your new todo'),
-            ),
-            actions: <Widget>[
+              title: const Text('Add a new todo item'),
+              content: TextField(
+                onSubmitted: (newTodo) => onFinishSubmitted(currentPrio),
+                autofocus: true,
+                controller: _textFieldController,
+                decoration:
+                    const InputDecoration(hintText: 'Type your new todo'),
+              ),
+              actions: <Widget>[
+                ElevatedButton(
+                  style: ButtonStyle(
+                      minimumSize: MaterialStateProperty.resolveWith(
+                          (states) => const Size(1, 40)),
 
-              ElevatedButton(
-                style: ButtonStyle(
-                    minimumSize: MaterialStateProperty.resolveWith(
-                        (states) => const Size(1, 40)),
+                      ///backgroundColor: get_my_color(user.prio, user.done),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(700.0),
+                        //side: BorderSide(color: currentColor, width: 10.0)
+                      ))),
+                  child: Text(
+                    getPrioText(currentPrio),
+                    //style: TextStyle(color: currentTextColor),
+                  ),
 
-                    ///backgroundColor: get_my_color(user.prio, user.done),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(700.0),
-                      //side: BorderSide(color: currentColor, width: 10.0)
-                    ))),
-                child: Text(
-                  getPrioText(currentPrio),
-                  //style: TextStyle(color: currentTextColor),
+                  ///prio logic
+                  onPressed: () {
+                    setState(() {
+                      print(currentPrio);
+                      if (currentPrio == 3) {
+                        currentPrio = 1;
+                      } else {
+                        currentPrio += 1;
+                      }
+                      //saveItems(users);
+                    });
+                  },
                 ),
-
-                ///prio logic
-                onPressed: () {
-                  setState(() {
-                    print(currentPrio);
-                    if (currentPrio == 3) {
-                      currentPrio = 1;
-                    } else {
-                      currentPrio += 1;
-                    }
-                    //saveItems(users);
-                  });
-                },
-              ),
-              TextButton(
-                child: const Text('Add'),
-                onPressed: () => onFinishSubmitted(currentPrio),
-              ),
-            ],
-            );},
+                TextButton(
+                  child: const Text('Add'),
+                  onPressed: () => onFinishSubmitted(currentPrio),
+                ),
+              ],
+            );
+          },
         );
       },
     );
   }
- void onFinishSubmitted(int currentPrio){
-   Navigator.of(context).pop();
-   _addTodoItem(_textFieldController.text, currentPrio);
-   _textFieldController.text = "";
- }
+
+  void onFinishSubmitted(int currentPrio) {
+    Navigator.of(context).pop();
+    _addTodoItem(_textFieldController.text, currentPrio);
+    _textFieldController.text = "";
+  }
+
   void done(int index) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int score = prefs.getInt('score') ?? 0;
