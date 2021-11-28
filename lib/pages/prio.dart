@@ -5,7 +5,7 @@ import '../model/items.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'drag_and_drop_calendar.dart';
 import 'package:duration_picker/duration_picker.dart';
-//import 'package:duration_picker_dialog_box/duration_picker_dialog_box.dart';
+
 
 class PrioPage extends StatefulWidget {
   const PrioPage({Key? key}) : super(key: key);
@@ -24,7 +24,7 @@ class _PrioPageState extends State<PrioPage> {
   Color prioBColor = Colors.purpleAccent;
   Color prioCColor = Colors.blueAccent;
   Color doneColor = Colors.green;
-  Duration _duration = Duration(hours: 0, minutes: 30);
+
 
   bool donesBellowEveryItems = false;
 
@@ -322,7 +322,6 @@ class _PrioPageState extends State<PrioPage> {
 
   Future<void> _addNewItem() async {
     int currentPrio = 3;
-    List<bool> isSelected = [false, false, true];
 
     return showDialog<void>(
       context: context,
@@ -360,7 +359,6 @@ class _PrioPageState extends State<PrioPage> {
                   ///prio logic
                   onPressed: () {
                     setState(() {
-                      print(currentPrio);
                       if (currentPrio == 3) {
                         currentPrio = 1;
                       } else {

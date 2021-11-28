@@ -101,11 +101,11 @@ class _DragAndDropCalendarState extends SampleViewState {
                   ))
               : Container(
                   color: model.cardThemeColor,
-                  padding: EdgeInsets.only(top: 20),
+                  padding: const EdgeInsets.only(top: 20),
                   child: calendar),
         ),
         FloatingActionButton(
-            child: Icon(Icons.refresh_outlined), onPressed: reorder),
+            child: const Icon(Icons.refresh_outlined), onPressed: reorder),
       ]),
     );
   }
