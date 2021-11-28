@@ -160,7 +160,15 @@ class _PrioPageState extends State<PrioPage> {
       key: ValueKey(user),
       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       tileColor: currentColor,
-      title: Text(user.name, style: TextStyle(color: currentTextColor)),
+      title: TextButton(
+          onPressed: () => edit(index),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(user.name,
+                textAlign: TextAlign.left,
+                style: TextStyle(color: currentTextColor)),
+          )),
+
       trailing: Theme(
         data: ThemeData(hintColor: currentTextColor),
         child: Row(
@@ -203,13 +211,7 @@ class _PrioPageState extends State<PrioPage> {
                 });
               },
             ),
-            IconButton(
-              alignment: Alignment.centerRight,
-              //padding: EdgeInsets.symmetric(vertical: 20, horizontal: 0),
-              iconSize: 22,
-              icon: Icon(Icons.edit, color: currentTextColor),
-              onPressed: () => edit(index),
-            ),
+
             IconButton(
               icon: Icon(Icons.delete, color: currentTextColor),
               onPressed: () => remove(index),
