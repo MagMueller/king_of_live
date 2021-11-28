@@ -81,7 +81,7 @@ class _DragAndDropCalendarState extends SampleViewState {
 
     final double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      body: Row(children: <Widget>[
+      body: Column(children: <Widget>[
         Expanded(
           child: _calendarController.view == CalendarView.month &&
                   model.isWebFullView &&
@@ -99,8 +99,13 @@ class _DragAndDropCalendarState extends SampleViewState {
                       )
                     ],
                   ))
-              : Container(color: model.cardThemeColor, padding: EdgeInsets.only(top: 20), child: calendar),
-        )
+              : Container(
+                  color: model.cardThemeColor,
+                  padding: EdgeInsets.only(top: 20),
+                  child: calendar),
+        ),
+        FloatingActionButton(
+            child: Icon(Icons.refresh_outlined), onPressed: reorder),
       ]),
     );
   }
@@ -124,7 +129,7 @@ class _DragAndDropCalendarState extends SampleViewState {
   }
 
   /// Creates the required appointment details as a list.
-  List<Appointment> getAppointmentDetails() {
+  List<Appointment> getAppointmentDetails({bool reorder = false}) {
     final List<Appointment> appointments = <Appointment>[];
     DateTime today = DateTime.now();
 
@@ -139,16 +144,20 @@ class _DragAndDropCalendarState extends SampleViewState {
       DateTime startDate;
 
       /// is item already place? -> use this time : else calculate last stop
-      if (users[i].placed) {
+      if (users[i].placed && !reorder) {
         startDate = DateTime.parse(users[i].start);
       } else {
+
+
         /// just calculate new place, if it is not done
         if (!users[i].done) {
           startDate = nextMeeting;
           nextMeeting = startDate.add(Duration(minutes: users[i].time));
           users[i].placed = true;
-        } else{
+        } else {
           /// skip done
+          /// dont place them any more
+          users[i].placed = false;
           continue;
         }
       }
@@ -257,6 +266,13 @@ class _DragAndDropCalendarState extends SampleViewState {
       prioCColor =
           Color(prefs.getInt('prio_c_color') ?? Colors.lightBlueAccent.value);
       doneColor = Color(prefs.getInt('done_color') ?? Colors.green.value);
+    });
+  }
+
+  reorder() async {
+    await loadItems();
+    setState(() {
+      _events = _DataSource(getAppointmentDetails(reorder: true));
     });
   }
 }
