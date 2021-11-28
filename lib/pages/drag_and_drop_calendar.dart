@@ -99,7 +99,7 @@ class _DragAndDropCalendarState extends SampleViewState {
                       )
                     ],
                   ))
-              : Container(color: model.cardThemeColor, child: calendar),
+              : Container(color: model.cardThemeColor, padding: EdgeInsets.only(top: 20), child: calendar),
         )
       ]),
     );
