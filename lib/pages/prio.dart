@@ -344,16 +344,17 @@ class _PrioPageState extends State<PrioPage> {
                   style: ButtonStyle(
                       minimumSize: MaterialStateProperty.resolveWith(
                           (states) => const Size(1, 40)),
-
+                      backgroundColor: MaterialStateProperty.resolveWith(
+                              (states) =>  getMyColor(currentPrio, false)),
                       ///backgroundColor: get_my_color(user.prio, user.done),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(700.0),
-                        //side: BorderSide(color: currentColor, width: 10.0)
+                        side: BorderSide(color: getMyColor(currentPrio, false), width: 10.0)
                       ))),
                   child: Text(
                     getPrioText(currentPrio),
-                    //style: TextStyle(color: currentTextColor),
+                    style: TextStyle(color: getOppositeColor(getMyColor(currentPrio, false))),
                   ),
 
                   ///prio logic
