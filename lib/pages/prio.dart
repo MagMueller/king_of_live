@@ -296,43 +296,75 @@ class _PrioPageState extends State<PrioPage> {
     }
   }
 
-  _addTodoItem(String name) => setState(() {
-        users.add(Items(name: name));
+  _addTodoItem(String name, int prio) => setState(() {
+        users.add(Items(name: name, prio: prio));
         saveItems(users);
       });
 
   Future<void> _addNewItem() async {
+    int currentPrio = 3;
+    List<bool> isSelected = [false,false,true];
+
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Add a new todo item'),
-          content: TextField(
-            onSubmitted: (newTodo) {
-              _textFieldController.text = "";
-              Navigator.of(context).pop();
-              _addTodoItem(newTodo);
-            },
-            autofocus: true,
-            controller: _textFieldController,
-            decoration: const InputDecoration(hintText: 'Type your new todo'),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Add'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                _addTodoItem(_textFieldController.text);
-                _textFieldController.text = "";
-              },
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+            title: const Text('Add a new todo item'),
+            content: TextField(
+              onSubmitted: (newTodo) => onFinishSubmitted(currentPrio),
+              autofocus: true,
+              controller: _textFieldController,
+              decoration: const InputDecoration(hintText: 'Type your new todo'),
             ),
-          ],
+            actions: <Widget>[
+
+              ElevatedButton(
+                style: ButtonStyle(
+                    minimumSize: MaterialStateProperty.resolveWith(
+                        (states) => const Size(1, 40)),
+
+                    ///backgroundColor: get_my_color(user.prio, user.done),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(700.0),
+                      //side: BorderSide(color: currentColor, width: 10.0)
+                    ))),
+                child: Text(
+                  getPrioText(currentPrio),
+                  //style: TextStyle(color: currentTextColor),
+                ),
+
+                ///prio logic
+                onPressed: () {
+                  setState(() {
+                    print(currentPrio);
+                    if (currentPrio == 3) {
+                      currentPrio = 1;
+                    } else {
+                      currentPrio += 1;
+                    }
+                    //saveItems(users);
+                  });
+                },
+              ),
+              TextButton(
+                child: const Text('Add'),
+                onPressed: () => onFinishSubmitted(currentPrio),
+              ),
+            ],
+            );},
         );
       },
     );
   }
-
+ void onFinishSubmitted(int currentPrio){
+   Navigator.of(context).pop();
+   _addTodoItem(_textFieldController.text, currentPrio);
+   _textFieldController.text = "";
+ }
   void done(int index) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int score = prefs.getInt('score') ?? 0;

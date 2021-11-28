@@ -12,7 +12,7 @@ class Items {
 
   Items({
     required this.name,
-
+    required this.prio,
   });
 
   Map<String, dynamic> toJson(){
