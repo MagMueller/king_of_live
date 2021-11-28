@@ -141,6 +141,17 @@ class _PrioPageState extends State<PrioPage> {
     Color currentColor = getMyColor(user.prio, user.done);
     Color currentTextColor = getOppositeColor(currentColor);
 
+    /*
+    _textFieldController.addListener(() {
+      final newText = _textFieldController.text;
+      _textFieldController.value = _textFieldController.value.copyWith(
+        text: newText,
+        selection: TextSelection(baseOffset: newText.length, extentOffset: newText.length),
+        composing: TextRange.empty,
+      );
+    });
+    */
+
     return ListTile(
       ///key needed for ListTile
       key: ValueKey(user),
@@ -298,6 +309,11 @@ class _PrioPageState extends State<PrioPage> {
         return AlertDialog(
           title: const Text('Add a new todo item'),
           content: TextField(
+            onSubmitted: (newTodo) {
+              _textFieldController.text = "";
+              Navigator.of(context).pop();
+              _addTodoItem(newTodo);
+            },
             autofocus: true,
             controller: _textFieldController,
             decoration: const InputDecoration(hintText: 'Type your new todo'),
@@ -308,6 +324,7 @@ class _PrioPageState extends State<PrioPage> {
               onPressed: () {
                 Navigator.of(context).pop();
                 _addTodoItem(_textFieldController.text);
+                _textFieldController.text = "";
               },
             ),
           ],
@@ -427,6 +444,6 @@ saveItems(List<Items> users, {String key = 'users'}) async {
   for (int i = 0; i < users.length; i++) {
     usersStrings.add(jsonEncode(users[i]));
   }
-  //print("This will be saved: $users_strings");
+  //print("This will be saved: $usersStrings");
   prefs.setStringList(key, usersStrings);
 }
