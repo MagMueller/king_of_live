@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
+import 'package:url_launcher/url_launcher.dart';
+
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:in_app_review/in_app_review.dart';
 
 class SettingsRoute extends StatefulWidget {
   const SettingsRoute({Key? key}) : super(key: key);
@@ -18,6 +22,7 @@ class _SettingsRouteState extends State<SettingsRoute> {
   Color prioBColor = Colors.orange;
   Color prioCColor = Colors.lightBlueAccent;
   Color doneColor = Colors.green;
+  final InAppReview inAppReview = InAppReview.instance;
 
   //List<Color> currentColors = [Colors.limeAccent, Colors.green];
 
@@ -35,7 +40,7 @@ class _SettingsRouteState extends State<SettingsRoute> {
     return Theme(
       data: lightTheme ? ThemeData.light() : ThemeData.dark(),
       child: DefaultTabController(
-        length: 1,
+        length: 2,
         child: Scaffold(
           appBar: AppBar(
             title: GestureDetector(
@@ -45,6 +50,7 @@ class _SettingsRouteState extends State<SettingsRoute> {
             bottom: const TabBar(
               tabs: <Widget>[
                 Tab(text: 'Color'),
+                Tab(text: 'Autor'),
                 //const Tab(text: 'Material'),
                 //const Tab(text: 'Block'),
               ],
@@ -65,6 +71,98 @@ class _SettingsRouteState extends State<SettingsRoute> {
                   buildColorChooser(
                       context, prioCColor, "Prio C", "prio_c_color"),
                   buildColorChooser(context, doneColor, "Done", "done_color"),
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    "Magnus Müller",
+                    style: TextStyle(fontSize: 30),
+                  ),
+                  Text(
+                    "Thank you for using my app.\n\nPlease contact me for any feedback.\nThank you for helping me to improve and optimize the app. A Google Play review or donation would help me immensely. Also check my other social media channels.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                          iconSize: 100.0,
+                          icon: FaIcon(
+                            FontAwesomeIcons.paypal,
+                          ),
+                          onPressed: () async {
+                            const url =
+                                'https://www.paypal.com/paypalme/stormysix6/10';
+                            launch(url);
+                          }),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Column(
+                        children: [
+                          SizedBox(
+                            height: 5,
+                          ),
+                          IconButton(
+                              iconSize: 100.0,
+                              icon: FaIcon(
+                                FontAwesomeIcons.googlePlay,
+                              ),
+                              onPressed: () async {
+                                const url =
+                                    'http://play.google.com/store/apps/details?id=.de.king_of_live';
+                                launch(url);
+                              }),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                          iconSize: 70.0,
+                          icon: FaIcon(
+                            FontAwesomeIcons.youtubeSquare,
+                          ),
+                          onPressed: () async {
+                            const url =
+                                'https://www.youtube.com/channel/UC9V_QjZXWEU9uBJuc78vnaA';
+                            launch(url);
+                          }),
+                      IconButton(
+                          iconSize: 70.0,
+                          icon: FaIcon(
+                            FontAwesomeIcons.tiktok,
+                          ),
+                          onPressed: () async {
+                            const url = 'https://www.tiktok.com/@stormysix';
+                            launch(url);
+                          }),
+                      IconButton(
+                          iconSize: 70.0,
+                          icon: FaIcon(
+                            FontAwesomeIcons.instagram,
+                          ),
+                          onPressed: () async {
+                            const url =
+                                'https://www.instagram.com/magnus_yeah/';
+                            launch(url);
+                          }),
+                      IconButton(
+                          iconSize: 70.0,
+                          icon: FaIcon(
+                            FontAwesomeIcons.mailBulk,
+                          ),
+                          onPressed: () async {
+                            const url = 'mailto:mamagnus00@gmail.com';
+                            launch(url);
+                          })
+                    ],
+                  ),
                 ],
               ),
             ],
