@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../pages/prio.dart';
 import '../pages/settings.dart';
 import '../pages/completedPage.dart';
+import '../pages/timerTaskSelectorPage.dart';
 import 'countdown.dart';
 
 class FirstScreen extends StatefulWidget {
@@ -90,7 +91,8 @@ class _FirstScreenState extends State<FirstScreen> {
               ),
               buildCustomButton(context, "My Day", const DragAndDropCalendar()),
               buildCustomButton(context, "My Priorities", const PrioPage()),
-              buildCustomButton(context, "Timer", CountdownPage(title: "Countdown",)),
+              //buildCustomButton(context, "Timer", CountdownPage(title: "Countdown",)),
+              buildCustomButton(context, "Timer", TaskSelectorPage()),
               const SizedBox(
                 height: 70,
               ),
