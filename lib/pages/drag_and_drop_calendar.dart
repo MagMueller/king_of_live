@@ -104,8 +104,20 @@ class _DragAndDropCalendarState extends SampleViewState {
                   padding: const EdgeInsets.only(top: 20),
                   child: calendar),
         ),
-        FloatingActionButton(
-            child: const Icon(Icons.refresh_outlined), onPressed: reorder),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          //mainAxisSize: MainAxisSize.max,
+          children: [
+            FloatingActionButton(
+                child: const Icon(Icons.list, size: 35,), onPressed: () {Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => PrioPage()),
+            );}),
+
+            FloatingActionButton(
+                child: const Icon(Icons.refresh_outlined), onPressed: reorder),
+          ],
+        ),
       ]),
     );
   }
