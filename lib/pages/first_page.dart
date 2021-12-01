@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../pages/prio.dart';
 import '../pages/settings.dart';
 import '../pages/completedPage.dart';
+import 'countdown.dart';
 
 class FirstScreen extends StatefulWidget {
   const FirstScreen({Key? key}) : super(key: key);
@@ -61,7 +62,7 @@ class _FirstScreenState extends State<FirstScreen> {
             //crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               const SizedBox(
-                height: 100,
+                height: 10,
               ),
               SizedBox(
                   //decoration: BoxDecoration(border: Border.all(color: Colors.blue)),
@@ -89,6 +90,7 @@ class _FirstScreenState extends State<FirstScreen> {
               ),
               buildCustomButton(context, "My Day", const DragAndDropCalendar()),
               buildCustomButton(context, "My Priorities", const PrioPage()),
+              buildCustomButton(context, "Timer", CountdownPage(title: "Countdown",)),
               const SizedBox(
                 height: 70,
               ),
