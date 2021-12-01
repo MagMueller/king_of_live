@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'drag_and_drop_calendar.dart';
 import 'package:duration_picker/duration_picker.dart';
 
-
 class PrioPage extends StatefulWidget {
   const PrioPage({Key? key}) : super(key: key);
 
@@ -24,7 +23,6 @@ class _PrioPageState extends State<PrioPage> {
   Color prioBColor = Colors.purpleAccent;
   Color prioCColor = Colors.blueAccent;
   Color doneColor = Colors.green;
-
 
   bool donesBellowEveryItems = false;
 
@@ -144,17 +142,6 @@ class _PrioPageState extends State<PrioPage> {
     Color currentColor = getMyColor(user.prio, user.done);
     Color currentTextColor = getOppositeColor(currentColor);
 
-    /*
-    _textFieldController.addListener(() {
-      final newText = _textFieldController.text;
-      _textFieldController.value = _textFieldController.value.copyWith(
-        text: newText,
-        selection: TextSelection(baseOffset: newText.length, extentOffset: newText.length),
-        composing: TextRange.empty,
-      );
-    });
-    */
-
     return ListTile(
       ///key needed for ListTile
       key: ValueKey(user),
@@ -176,40 +163,52 @@ class _PrioPageState extends State<PrioPage> {
           children: [
             ///Text field for task time
 
-            buildBuilderDurationPicker(user, currentColor),
+            Visibility(
+                maintainSize: true,
+                maintainAnimation: true,
+                maintainState: true,
+                visible: (user.done) ? false : true,
+                child: buildBuilderDurationPicker(user, currentColor)),
 
             //TextButton(onPressed: () => openDurationPicker, child: Text(user.time.toString())),
             const SizedBox(width: 4),
 
             ///Prio Button
-            ElevatedButton(
-              style: ButtonStyle(
-                  minimumSize: MaterialStateProperty.resolveWith(
-                      (states) => const Size(1, 40)),
-                  backgroundColor: MaterialStateProperty.resolveWith(
-                      (states) => currentColor),
+            Visibility(
+              maintainSize: true,
+              maintainAnimation: true,
+              maintainState: true,
+              visible: (user.done) ? false : true,
+              child: ElevatedButton(
+                style: ButtonStyle(
+                    minimumSize: MaterialStateProperty.resolveWith(
+                        (states) => const Size(1, 40)),
+                    backgroundColor: MaterialStateProperty.resolveWith(
+                        (states) => currentColor),
 
-                  ///backgroundColor: get_my_color(user.prio, user.done),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(700.0),
-                          side: BorderSide(color: currentColor, width: 10.0)))),
-              child: Text(
-                getPrioText(user.prio),
-                style: TextStyle(color: currentTextColor),
+                    ///backgroundColor: get_my_color(user.prio, user.done),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(700.0),
+                            side:
+                                BorderSide(color: currentColor, width: 10.0)))),
+                child: Text(
+                  getPrioText(user.prio),
+                  style: TextStyle(color: currentTextColor),
+                ),
+
+                ///prio logic
+                onPressed: () {
+                  setState(() {
+                    if (user.prio == 3) {
+                      user.prio = 1;
+                    } else {
+                      user.prio += 1;
+                    }
+                    saveItems(users);
+                  });
+                },
               ),
-
-              ///prio logic
-              onPressed: () {
-                setState(() {
-                  if (user.prio == 3) {
-                    user.prio = 1;
-                  } else {
-                    user.prio += 1;
-                  }
-                  saveItems(users);
-                });
-              },
             ),
 
             IconButton(
@@ -217,8 +216,7 @@ class _PrioPageState extends State<PrioPage> {
               onPressed: () => remove(index),
             ),
             IconButton(
-              icon: Icon(Icons.done_outline,
-                  color: user.done ? Colors.green : currentTextColor),
+              icon: Icon(Icons.done_outline, color: currentTextColor),
               onPressed: () => done(index),
             ),
           ],
@@ -344,16 +342,20 @@ class _PrioPageState extends State<PrioPage> {
                       minimumSize: MaterialStateProperty.resolveWith(
                           (states) => const Size(1, 40)),
                       backgroundColor: MaterialStateProperty.resolveWith(
-                              (states) =>  getMyColor(currentPrio, false)),
+                          (states) => getMyColor(currentPrio, false)),
+
                       ///backgroundColor: get_my_color(user.prio, user.done),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(700.0),
-                        side: BorderSide(color: getMyColor(currentPrio, false), width: 10.0)
-                      ))),
+                              borderRadius: BorderRadius.circular(700.0),
+                              side: BorderSide(
+                                  color: getMyColor(currentPrio, false),
+                                  width: 10.0)))),
                   child: Text(
                     getPrioText(currentPrio),
-                    style: TextStyle(color: getOppositeColor(getMyColor(currentPrio, false))),
+                    style: TextStyle(
+                        color:
+                            getOppositeColor(getMyColor(currentPrio, false))),
                   ),
 
                   ///prio logic
