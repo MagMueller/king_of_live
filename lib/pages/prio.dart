@@ -251,9 +251,8 @@ class _PrioPageState extends State<PrioPage> {
                   saveItems(users);
                 }
               },
-              child: Text(
-                user.time.toString(),
-              ),
+              child: Text(user.time.toString(),
+                  style: TextStyle(color: getOppositeColor(currentColor))),
             ));
   }
 
