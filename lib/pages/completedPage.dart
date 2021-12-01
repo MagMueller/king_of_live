@@ -63,8 +63,60 @@ class _CompletedPageState extends State<CompletedPage> {
               //bottom box bellow the list -> you can scroll further up
             ],
           ),
+          floatingActionButton: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              FloatingActionButton(
+                  heroTag: "delete",
+                  backgroundColor: Colors.blue,
+                  onPressed: () => showAlertDialog(context),
+                  child: const Icon(
+                    Icons.delete_sharp,
+                    size: 30,
+                  )),
+            ],
+          ),
         ),
       );
+
+  showAlertDialog(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    Widget continueButton = FlatButton(
+      child: Text("Yes"),
+
+      /// delete all completed items
+      onPressed: () {
+        setState(() {
+          users = [];
+        });
+        saveItems(users, key: 'done_items');
+        Navigator.of(context).pop();
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Delete all completed Todos"),
+      content: Text("Do you really want to delete all the finished todos?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 
   ///this is one list entry
   Widget buildUser(int index, Items user, double edgeInsets) {
