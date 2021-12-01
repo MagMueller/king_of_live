@@ -16,7 +16,6 @@ class PrioPage extends StatefulWidget {
 class _PrioPageState extends State<PrioPage> {
   bool lightTheme = false;
   List<Items> users = [];
-  List<bool> isSelected = [true, false, false];
 
   final TextEditingController _textFieldController = TextEditingController();
   Color prioAColor = Colors.red;
@@ -219,6 +218,15 @@ class _PrioPageState extends State<PrioPage> {
               icon: Icon(Icons.done_outline, color: currentTextColor),
               onPressed: () => done(index),
             ),
+            Visibility(
+                maintainSize: true,
+                maintainAnimation: true,
+                maintainState: true,
+                visible: (users[index].isARoutine) ? true : false,
+                child: Text(
+                  users[index].routineStreak.toString(),
+                  style: TextStyle(color: currentTextColor),
+                )),
           ],
         ),
       ),
@@ -312,14 +320,14 @@ class _PrioPageState extends State<PrioPage> {
     }
   }
 
-  _addTodoItem(String name, int prio) => setState(() {
-        users.add(Items(name: name, prio: prio));
+  _addTodoItem(String name, int prio, bool routine) => setState(() {
+        users.add(Items(name: name, prio: prio, isARoutine: routine));
         saveItems(users);
       });
 
   Future<void> _addNewItem() async {
     int currentPrio = 3;
-
+    bool isARoutine = false;
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -329,13 +337,29 @@ class _PrioPageState extends State<PrioPage> {
             return AlertDialog(
               title: const Text('Add a new todo item'),
               content: TextField(
-                onSubmitted: (newTodo) => onFinishSubmitted(currentPrio),
+                onSubmitted: (newTodo) =>
+                    onFinishSubmitted(currentPrio, isARoutine),
                 autofocus: true,
                 controller: _textFieldController,
                 decoration:
                     const InputDecoration(hintText: 'Type your new todo'),
               ),
               actions: <Widget>[
+                TextButton(
+                  child: Text('Daily Habbit',
+                      style: TextStyle(
+                          color: isARoutine
+                              ? Colors.black
+                              : Colors.black.withOpacity(0.3))),
+                  onPressed: () => {
+                    setState(() {
+                      isARoutine = !isARoutine;
+                    })
+                  },
+                ),
+                SizedBox(
+                  width: 20,
+                ),
                 ElevatedButton(
                   style: ButtonStyle(
                       minimumSize: MaterialStateProperty.resolveWith(
@@ -371,7 +395,7 @@ class _PrioPageState extends State<PrioPage> {
                 ),
                 TextButton(
                   child: const Text('Add'),
-                  onPressed: () => onFinishSubmitted(currentPrio),
+                  onPressed: () => onFinishSubmitted(currentPrio, isARoutine),
                 ),
               ],
             );
@@ -381,28 +405,40 @@ class _PrioPageState extends State<PrioPage> {
     );
   }
 
-  void onFinishSubmitted(int currentPrio) {
+  void onFinishSubmitted(int currentPrio, bool routine) {
     Navigator.of(context).pop();
-    _addTodoItem(_textFieldController.text, currentPrio);
+    _addTodoItem(_textFieldController.text, currentPrio, routine);
     _textFieldController.text = "";
   }
 
   void done(int index) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int score = prefs.getInt('score') ?? 0;
-
+    DateTime today = DateTime.now();
     setState(() {
       users[index].done = !users[index].done;
+
+      if (users[index].done) {
+        /// increase score
+        score += 4 - users[index].prio;
+        if (users[index].isARoutine) {
+          users[index].lastDone =
+              DateTime(today.year, today.month, today.day).toIso8601String();
+          users[index].routineStreak += 1;
+        }
+        safeItem(users[index]);
+      } else {
+        /// decrease score
+        score -= 4 - users[index].prio;
+        if (users[index].isARoutine) {
+          users[index].lastDone =
+              DateTime(today.year, today.month, today.day - 1)
+                  .toIso8601String();
+          users[index].routineStreak -= 1;
+        }
+      }
     });
 
-    if (users[index].done) {
-      /// increase score
-      score += 4 - users[index].prio;
-      safeItem(users[index]);
-    } else {
-      /// decrease score
-      score -= 4 - users[index].prio;
-    }
     saveItems(users);
     prefs.setInt('score', score);
   }
@@ -427,6 +463,7 @@ class _PrioPageState extends State<PrioPage> {
         userList.add(loadedItem);
       }
     }
+    userList = resetRoutins(userList);
     setState(() {
       users = userList;
     });
@@ -480,6 +517,25 @@ class _PrioPageState extends State<PrioPage> {
 
     ///safe list
     ///
+  }
+
+  List<Items> resetRoutins(List<Items> userList) {
+    /// reset a Routine daily, so that it could be used again
+    Items user;
+    DateTime today = DateTime.now();
+    String todayString =
+        DateTime(today.year, today.month, today.day).toIso8601String();
+
+    for (int i = 0; i < userList.length; i++) {
+      user = userList[i];
+
+      if (user.isARoutine && user.done) {
+        if (user.lastDone != todayString) {
+          userList[i].done = false;
+        }
+      }
+    }
+    return userList;
   }
 }
 
