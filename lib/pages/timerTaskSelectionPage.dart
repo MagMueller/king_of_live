@@ -6,22 +6,30 @@ import 'prio.dart';
 import 'package:flutter/material.dart';
 import '../model/items.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
+import 'dart:io';
 
-class TimerSelectionPage extends StatefulWidget {
-  const TimerSelectionPage({Key? key}) : super(key: key);
+import 'first_page.dart';
+import 'timerTimeSelectionPage.dart';
+
+class TimerTaskSelectionPage extends StatefulWidget {
+  const TimerTaskSelectionPage({Key? key}) : super(key: key);
 
   @override
-  State<TimerSelectionPage> createState() => _TimerSelectionPageState();
+  State<TimerTaskSelectionPage> createState() => _TimerTaskSelectionPageState();
 }
 
-class _TimerSelectionPageState extends State<TimerSelectionPage> {
+class _TimerTaskSelectionPageState extends State<TimerTaskSelectionPage> {
   int isSelected = 0;
 
-  DateTime _today = DateTime.now();
-  DateTime _dateTime = DateTime(0, 0, 0, 0, 0); //DateTime.now();
+  //DateTime _today = DateTime.now();
+  //DateTime zero = DateTime(0, 0, 0, 0, 0);
+  DateTime zero = DateTime(0, 0, 0, 0, 0); //DateTime.now();
   DateTime _dateTimeStandard = DateTime(0, 0, 0, 0, 30);
+  late DateTime newTime;
 
-  _TimerSelectionPageState();
+  int lastSelected = 0;
+
+  _TimerTaskSelectionPageState();
 
   List<Items> users = [];
   bool lightTheme = false;
@@ -29,24 +37,12 @@ class _TimerSelectionPageState extends State<TimerSelectionPage> {
   Color prioBColor = Colors.purpleAccent;
   Color prioCColor = Colors.blueAccent;
   Color doneColor = Colors.green;
-  late TimePickerSpinner mySpinner;
 
   @override
   void initState() {
     super.initState();
+    newTime = _dateTimeStandard;
 
-    mySpinner = TimePickerSpinner(
-      isShowSeconds: false,
-      time: _dateTimeStandard,
-      minutesInterval: 1,
-      //highlightedTextStyle: TextStyle(color: Colors.white),
-      onTimeChange: (hh) {
-        setState(() {
-          _dateTime = hh;
-        });
-      },
-    );
-    //print(mySpinner.time!);
     loadItems();
   }
 
@@ -85,48 +81,32 @@ class _TimerSelectionPageState extends State<TimerSelectionPage> {
                   ),
                 ),
               ),
-              Container(
-                height: 200,
 
-                color: lightTheme
-                    ? Theme.of(context).primaryColor
-                    : const Color(0xFF424242),
-
-                child: isSelected == -1
-                    ? Center(
-                      child: TimePickerSpinner(
-                          isShowSeconds: false,
-                          time: _dateTimeStandard,
-                          minutesInterval: 1,
-                          //highlightedTextStyle: TextStyle(color: Colors.white),
-                          onTimeChange: (changedTime) {
-                            setState(() {
-                              _dateTimeStandard = changedTime;
-                            });
-                          },
-                        ),
-                    )
-                    : TimePickerSpinner(
-                        isShowSeconds: false,
-                        time: _dateTime,
-                        minutesInterval: 1,
-                        //highlightedTextStyle: TextStyle(color: Colors.white),
-                        onTimeChange: (hh) {
-                          setState(() {
-                            _dateTime = hh;
-                          });
-                        },
-                      ),
-
-                //color: ThemeData.,
-              ),
               //bottom box bellow the list -> you can scroll further up
             ],
           ),
           floatingActionButton: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [],
+            children: [
+              IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => FirstScreen()),
+                    );
+                  },
+                  icon: Icon(Icons.navigate_before_rounded)),
+              IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => TimerSelectionPage(newTime)),
+                    );
+                  }, icon: Icon(Icons.navigate_next_rounded)),
+            ],
           ),
         ),
       );
@@ -146,13 +126,14 @@ class _TimerSelectionPageState extends State<TimerSelectionPage> {
         if (isSelected == index) {
           ///already selected
           isSelected = -1;
-          _dateTime = _dateTimeStandard;
+          //_dateTime = _dateTimeStandard;
+          newTime = _dateTimeStandard;
         } else {
           isSelected = index;
-          _dateTime = DateTime(0, 0, 0, 0, 0, 0, 0)
+          newTime = DateTime(0, 0, 0, 0, 0, 0, 0)
               .add(Duration(minutes: users[index].time));
 
-          //print(mySpinner.time);
+          print("newTime:" + newTime.toString());
           // .add(Duration(minutes: users[index].time));
         }
       }),
@@ -228,6 +209,10 @@ class _TimerSelectionPageState extends State<TimerSelectionPage> {
 
     setState(() {
       users = userList;
+
+      if (users.length > 0) {
+        newTime = zero.add(Duration(minutes: users[0].time));
+      }
     });
   }
 

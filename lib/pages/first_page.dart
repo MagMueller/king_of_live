@@ -93,7 +93,7 @@ class _FirstScreenState extends State<FirstScreen> {
               buildCustomButton(context, "My Day", const DragAndDropCalendar()),
               buildCustomButton(context, "My Priorities", const PrioPage()),
               //buildCustomButton(context, "Timer", CountdownPage(title: "Countdown",)),
-              buildCustomButton(context, "Timer", TimerSelectionPage()),
+              buildCustomButton(context, "Timer", TimerTaskSelectionPage()),
               const SizedBox(
                 height: 70,
               ),
