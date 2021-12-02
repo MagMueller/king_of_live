@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:king_of_live/pages/drag_and_drop_calendar.dart';
+import 'package:king_of_live/pages/timerTaskSelectionPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../pages/prio.dart';
 import '../pages/settings.dart';
@@ -92,7 +93,7 @@ class _FirstScreenState extends State<FirstScreen> {
               buildCustomButton(context, "My Day", const DragAndDropCalendar()),
               buildCustomButton(context, "My Priorities", const PrioPage()),
               //buildCustomButton(context, "Timer", CountdownPage(title: "Countdown",)),
-              buildCustomButton(context, "Timer", TaskSelectorPage()),
+              buildCustomButton(context, "Timer", TimerSelectionPage()),
               const SizedBox(
                 height: 70,
               ),
