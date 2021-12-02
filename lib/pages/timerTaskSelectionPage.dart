@@ -18,7 +18,7 @@ class _TimerSelectionPageState extends State<TimerSelectionPage> {
   int isSelected = 0;
 
   DateTime _today = DateTime.now();
-  DateTime _dateTime = DateTime(0, 0, 0, 0, 30); //DateTime.now();
+  DateTime _dateTime = DateTime(0, 0, 0, 0, 0); //DateTime.now();
   DateTime _dateTimeStandard = DateTime(0, 0, 0, 0, 30);
 
   _TimerSelectionPageState();
@@ -91,7 +91,33 @@ class _TimerSelectionPageState extends State<TimerSelectionPage> {
                 color: lightTheme
                     ? Theme.of(context).primaryColor
                     : const Color(0xFF424242),
-                child: mySpinner,
+
+                child: isSelected == -1
+                    ? Center(
+                      child: TimePickerSpinner(
+                          isShowSeconds: false,
+                          time: _dateTimeStandard,
+                          minutesInterval: 1,
+                          //highlightedTextStyle: TextStyle(color: Colors.white),
+                          onTimeChange: (changedTime) {
+                            setState(() {
+                              _dateTimeStandard = changedTime;
+                            });
+                          },
+                        ),
+                    )
+                    : TimePickerSpinner(
+                        isShowSeconds: false,
+                        time: _dateTime,
+                        minutesInterval: 1,
+                        //highlightedTextStyle: TextStyle(color: Colors.white),
+                        onTimeChange: (hh) {
+                          setState(() {
+                            _dateTime = hh;
+                          });
+                        },
+                      ),
+
                 //color: ThemeData.,
               ),
               //bottom box bellow the list -> you can scroll further up
@@ -120,33 +146,13 @@ class _TimerSelectionPageState extends State<TimerSelectionPage> {
         if (isSelected == index) {
           ///already selected
           isSelected = -1;
-          mySpinner = TimePickerSpinner(
-            isShowSeconds: false,
-            time: _dateTimeStandard,
-            minutesInterval: 1,
-            //highlightedTextStyle: TextStyle(color: Colors.white),
-            onTimeChange: (hh) {
-              setState(() {
-                _dateTime = hh;
-              });
-            },
-          );
+          _dateTime = _dateTimeStandard;
         } else {
           isSelected = index;
-          mySpinner = TimePickerSpinner(
-            isShowSeconds: false,
-            time: DateTime(0, 0, 0, 0, 0, 0, 0)
-                .add(Duration(minutes: users[index].time)),
-            minutesInterval: 1,
-            //highlightedTextStyle: TextStyle(color: Colors.white),
-            onTimeChange: (hh) {
-              setState(() {
-                _dateTime = hh;
-              });
-            },
+          _dateTime = DateTime(0, 0, 0, 0, 0, 0, 0)
+              .add(Duration(minutes: users[index].time));
 
-          );
-          print(mySpinner.time);
+          //print(mySpinner.time);
           // .add(Duration(minutes: users[index].time));
         }
       }),
