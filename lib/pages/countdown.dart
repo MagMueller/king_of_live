@@ -4,8 +4,8 @@ import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 
 
 class CountdownPage extends StatefulWidget {
-  CountdownPage({Key? key, this.title}) : super(key: key);
-
+  CountdownPage({Key? key, this.title, this.time}) : super(key: key);
+  final DateTime? time;
   final String? title;
 
   @override
@@ -14,8 +14,19 @@ class CountdownPage extends StatefulWidget {
 
 class _CountdownPageState extends State<CountdownPage> {
   CountDownController _controller = CountDownController();
-  int _duration = 30 * 60;
+  late int _duration;
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if ( widget.time != null){
+      _duration =  widget.time!.second;
+    } else{
+      _duration = 30 * 60;
+    }
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

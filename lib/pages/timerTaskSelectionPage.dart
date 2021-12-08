@@ -47,7 +47,8 @@ class _TimerTaskSelectionPageState extends State<TimerTaskSelectionPage> {
   }
 
   @override
-  Widget build(BuildContext context) => Theme(
+  Widget build(BuildContext context) =>
+      Theme(
         data: lightTheme ? ThemeData.light() : ThemeData.dark(),
         child: Scaffold(
           appBar: AppBar(
@@ -67,7 +68,7 @@ class _TimerTaskSelectionPageState extends State<TimerTaskSelectionPage> {
                   child: ListView.separated(
                     shrinkWrap: true,
                     separatorBuilder: (BuildContext context, int index) =>
-                        const Divider(
+                    const Divider(
                       height: 5,
                     ),
 
@@ -86,26 +87,36 @@ class _TimerTaskSelectionPageState extends State<TimerTaskSelectionPage> {
             ],
           ),
           floatingActionButton: Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => FirstScreen()),
-                    );
-                  },
-                  icon: Icon(Icons.navigate_before_rounded)),
-              IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => TimerSelectionPage(newTime)),
-                    );
-                  }, icon: Icon(Icons.navigate_next_rounded)),
+              Container(
+                decoration: roundBoxDeco(),
+                child: IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => FirstScreen()),
+                      );
+                    },
+                    icon: Icon(Icons.navigate_before_rounded)),
+              ),
+
+              Container(
+                decoration: roundBoxDeco(),
+                child: IconButton(
+                    onPressed: () {
+                      print("newTime: " + newTime.toString());
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                            TimerSelectionPage(time: newTime,)
+                        ),
+                      );
+                    },
+                    icon: Icon(Icons.navigate_next_rounded)),
+              ),
             ],
           ),
         ),
@@ -117,26 +128,35 @@ class _TimerTaskSelectionPageState extends State<TimerTaskSelectionPage> {
     Color currentTextColor = getOppositeColor(currentColor);
 
     return ListTile(
+
       ///key needed for ListTile
       key: ValueKey(user),
       contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       tileColor:
-          index == isSelected ? currentColor : currentColor.withOpacity(0.3),
-      onTap: () => setState(() {
-        if (isSelected == index) {
-          ///already selected
-          isSelected = -1;
-          //_dateTime = _dateTimeStandard;
-          newTime = _dateTimeStandard;
-        } else {
-          isSelected = index;
-          newTime = DateTime(0, 0, 0, 0, 0, 0, 0)
-              .add(Duration(minutes: users[index].time));
+      index == isSelected ? currentColor : currentColor.withOpacity(0.3),
+      onTap: () =>
+          setState(() {
+            if (isSelected == index) {
+              ///already selected
+              isSelected = -1;
+              //_dateTime = _dateTimeStandard;
+              newTime = _dateTimeStandard;
+            } else {
+              isSelected = index;
+              newTime = DateTime(
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0)
+                  .add(Duration(minutes: users[index].time));
 
-          print("newTime:" + newTime.toString());
-          // .add(Duration(minutes: users[index].time));
-        }
-      }),
+              print("newTime:" + newTime.toString());
+              // .add(Duration(minutes: users[index].time));
+            }
+          }),
       title: Text(user.name,
           style: TextStyle(color: getOppositeColor(currentTextColor))),
       trailing: Theme(
@@ -144,6 +164,7 @@ class _TimerTaskSelectionPageState extends State<TimerTaskSelectionPage> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
+
             ///duration
             Container(
               padding: const EdgeInsets.all(10),
@@ -244,6 +265,15 @@ class _TimerTaskSelectionPageState extends State<TimerTaskSelectionPage> {
     return prioAColor;
   }
 
+BoxDecoration roundBoxDeco() {
+  return BoxDecoration(
+    color: Colors.blue,
+    border: Border.all(width: 9.0),
+    borderRadius: BorderRadius.all(
+        Radius.circular(30.0) //                 <--- border radius here
+    ),
+  );
+}
 /*
   Widget hourMinuteSecond() {
 

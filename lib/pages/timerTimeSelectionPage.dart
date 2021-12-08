@@ -9,18 +9,20 @@ import 'package:flutter/material.dart';
 import '../model/items.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'dart:io';
+import 'timerTaskSelectionPage.dart';
 
 class TimerSelectionPage extends StatefulWidget {
-  final DateTime? time;
-  const TimerSelectionPage(DateTime this.time,{ Key? key}) : super(key: key);
+  DateTime? time;
+
+  TimerSelectionPage({this.time, Key? key}) : super(key: key);
 
   @override
-  State<TimerSelectionPage> createState() => _TimerSelectionPageState();
+  State<TimerSelectionPage> createState() =>
+      _TimerSelectionPageState();
 }
 
 class _TimerSelectionPageState extends State<TimerSelectionPage> {
   int isSelected = 0;
-
   //DateTime _today = DateTime.now();
   DateTime zero = DateTime(0, 0, 0, 0, 0);
   DateTime _dateTime = DateTime(0, 0, 0, 0, 0); //DateTime.now();
@@ -38,7 +40,7 @@ class _TimerSelectionPageState extends State<TimerSelectionPage> {
   @override
   void initState() {
     super.initState();
-
+    newTime = widget.time!;
     //print(mySpinner.time!);
     loadItems();
   }
@@ -55,53 +57,66 @@ class _TimerSelectionPageState extends State<TimerSelectionPage> {
             centerTitle: true,
           ),
           body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+//crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Container(
-                  height: 200,
-                  color: lightTheme
-                      ? Theme.of(context).primaryColor
-                      : const Color(0xFF424242),
-                  child: Row(
-                    children: [
-                      Center(child: buildTimePickerSpinner(newTime, "first")),
+              Center(
+                child: Container(
+                    height: 200,
+                    color: lightTheme
+                        ? Theme.of(context).primaryColor
+                        : const Color(0xFF424242),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Center(child: buildTimePickerSpinner(newTime, "first")),
 
-                      //Container(child:   mySpinner),
-                      Text(_dateTime.minute.toString())
-                    ],
-                  )
+                        //Container(child:   mySpinner),
+                        //Text(_dateTime.minute.toString())
+                      ],
+                    )
 
-                  //color: ThemeData.,
-                  ),
+                    //color: ThemeData.,
+                    ),
+              ),
               //bottom box bellow the list -> you can scroll further up
             ],
           ),
           floatingActionButton: Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => TimerTaskSelectionPage()),
-                    );
-                  },
-                  icon: Icon(Icons.navigate_before_rounded)),
-              IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => CountdownPage()),
-                    );
-                  },
-                  icon: Icon(Icons.navigate_next_rounded)),
+              Container(
+                decoration: roundBoxDeco(),
+                child: IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => TimerTaskSelectionPage()),
+                      );
+                    },
+                    icon: Icon(Icons.navigate_before_rounded)),
+              ),
+              Container(
+                decoration: roundBoxDeco(),
+                child: IconButton(
+
+                    onPressed: () {
+                      print("to countdownd" + newTime.toString());
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => CountdownPage(time: newTime, title: "Start Task",)),
+                      );
+                    },
+                    icon: Icon(Icons.navigate_next_rounded)),
+              ),
             ],
           ),
         ),
       );
 
-  TimePickerSpinner buildTimePickerSpinner(DateTime dateTime, String s) {
+  Widget buildTimePickerSpinner(DateTime dateTime, String s) {
     print(s + dateTime.toString());
     setState(() {
       //lastSelected = isSelected;
@@ -109,18 +124,18 @@ class _TimerSelectionPageState extends State<TimerSelectionPage> {
     });
     return TimePickerSpinner(
       isShowSeconds: false,
+
+      //alignment: Alignment.center,
       time: dateTime,
       minutesInterval: 1,
       //highlightedTextStyle: TextStyle(color: Colors.white),
       onTimeChange: (hh) {
         setState(() {
-          _dateTime = hh;
+          newTime = hh;
         });
       },
     );
   }
-
-
 
   String getPrioText(int prio) {
     List<String> prios = ["A", "B", "C"];
@@ -147,12 +162,19 @@ class _TimerSelectionPageState extends State<TimerSelectionPage> {
 
     setState(() {
       users = userList;
-      newTime = zero.add(Duration(minutes: users[0].time));
+      //newTime = zero.add(Duration(minutes: users[0].time));
     });
   }
 
-
-
+BoxDecoration roundBoxDeco() {
+    return BoxDecoration(
+      color: Colors.blue,
+      border: Border.all(width: 9.0),
+      borderRadius: BorderRadius.all(
+          Radius.circular(30.0) //                 <--- border radius here
+          ),
+    );
+  }
 /*
   Widget hourMinuteSecond() {
 
