@@ -21,11 +21,12 @@ class _CountdownPageState extends State<CountdownPage> {
     // TODO: implement initState
     super.initState();
     if ( widget.time != null){
-      _duration =  widget.time!.second;
+      _duration =  widget.time!.hour * 60 * 60 + widget.time!.minute * 60 + widget.time!.second ;
+
     } else{
       _duration = 30 * 60;
     }
-
+    print("my time:" + _duration.toString() + "current widget time " + widget.time.toString());
   }
   @override
   Widget build(BuildContext context) {
