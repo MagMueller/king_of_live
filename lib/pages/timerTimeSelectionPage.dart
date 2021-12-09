@@ -13,16 +13,17 @@ import 'timerTaskSelectionPage.dart';
 
 class TimerSelectionPage extends StatefulWidget {
   DateTime? time;
+  String? title;
 
-  TimerSelectionPage({this.time, Key? key}) : super(key: key);
+  TimerSelectionPage({this.time, Key? key, this.title}) : super(key: key);
 
   @override
-  State<TimerSelectionPage> createState() =>
-      _TimerSelectionPageState();
+  State<TimerSelectionPage> createState() => _TimerSelectionPageState();
 }
 
 class _TimerSelectionPageState extends State<TimerSelectionPage> {
   int isSelected = 0;
+
   //DateTime _today = DateTime.now();
   DateTime zero = DateTime(0, 0, 0, 0, 0);
   DateTime _dateTime = DateTime(0, 0, 0, 0, 0); //DateTime.now();
@@ -51,30 +52,27 @@ class _TimerSelectionPageState extends State<TimerSelectionPage> {
         child: Scaffold(
           appBar: AppBar(
             title: GestureDetector(
-              child: const Text('Select duration'),
+              child: const Text('Select a duration'),
               onDoubleTap: () => setState(() => lightTheme = !lightTheme),
             ),
             centerTitle: true,
           ),
           body: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 //crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+              Container(
+                child: Text(
+                  widget.title!,
+                  style: TextStyle(fontSize: 25),
+                ),
+              ),
+              //SizedBox(height: 30,),
               Center(
                 child: Container(
                     height: 200,
-                    color: lightTheme
-                        ? Theme.of(context).primaryColor
-                        : const Color(0xFF424242),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Center(child: buildTimePickerSpinner(newTime, "first")),
-
-                        //Container(child:   mySpinner),
-                        //Text(_dateTime.minute.toString())
-                      ],
-                    )
+                    child:
+                        Center(child: buildTimePickerSpinner(newTime, "first"))
 
                     //color: ThemeData.,
                     ),
@@ -101,12 +99,15 @@ class _TimerSelectionPageState extends State<TimerSelectionPage> {
               Container(
                 decoration: roundBoxDeco(),
                 child: IconButton(
-
                     onPressed: () {
                       print("to countdownd" + newTime.toString());
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => CountdownPage(time: newTime, title: "Start Task",)),
+                        MaterialPageRoute(
+                            builder: (context) => CountdownPage(
+                                  time: newTime,
+                                  title: "Start Task",
+                                )),
                       );
                     },
                     icon: Icon(Icons.navigate_next_rounded)),
@@ -124,11 +125,16 @@ class _TimerSelectionPageState extends State<TimerSelectionPage> {
     });
     return TimePickerSpinner(
       isShowSeconds: false,
-
+      is24HourMode: true,
+      isForce2Digits: true,
+      spacing: 60,
+      //itemHeight: 80,
       //alignment: Alignment.center,
       time: dateTime,
-      minutesInterval: 1,
-      //highlightedTextStyle: TextStyle(color: Colors.white),
+      minutesInterval: 5,
+      highlightedTextStyle: TextStyle(color: Colors.white, fontSize: 40),
+      normalTextStyle:
+          TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 40),
       onTimeChange: (hh) {
         setState(() {
           newTime = hh;
@@ -166,7 +172,7 @@ class _TimerSelectionPageState extends State<TimerSelectionPage> {
     });
   }
 
-BoxDecoration roundBoxDeco() {
+  BoxDecoration roundBoxDeco() {
     return BoxDecoration(
       color: Colors.blue,
       border: Border.all(width: 9.0),

@@ -27,7 +27,10 @@ class _TimerTaskSelectionPageState extends State<TimerTaskSelectionPage> {
   DateTime _dateTimeStandard = DateTime(0, 0, 0, 0, 30);
   late DateTime newTime;
 
-  int lastSelected = 0;
+  //int lastSelected = 0;
+  String defaultName = "No specific";
+  late String todoName;
+
 
   _TimerTaskSelectionPageState();
 
@@ -42,7 +45,7 @@ class _TimerTaskSelectionPageState extends State<TimerTaskSelectionPage> {
   void initState() {
     super.initState();
     newTime = _dateTimeStandard;
-
+    todoName = defaultName;
     loadItems();
   }
 
@@ -53,7 +56,7 @@ class _TimerTaskSelectionPageState extends State<TimerTaskSelectionPage> {
         child: Scaffold(
           appBar: AppBar(
             title: GestureDetector(
-              child: const Text('Select duration'),
+              child: const Text('Select a task'),
               onDoubleTap: () => setState(() => lightTheme = !lightTheme),
             ),
             centerTitle: true,
@@ -111,7 +114,7 @@ class _TimerTaskSelectionPageState extends State<TimerTaskSelectionPage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                            TimerSelectionPage(time: newTime,)
+                            TimerSelectionPage(time: newTime, title: todoName)
                         ),
                       );
                     },
@@ -141,8 +144,10 @@ class _TimerTaskSelectionPageState extends State<TimerTaskSelectionPage> {
               isSelected = -1;
               //_dateTime = _dateTimeStandard;
               newTime = _dateTimeStandard;
+              todoName = defaultName;
             } else {
               isSelected = index;
+              todoName = user.name;
               newTime = DateTime(
                   0,
                   0,
@@ -233,6 +238,7 @@ class _TimerTaskSelectionPageState extends State<TimerTaskSelectionPage> {
 
       if (users.length > 0) {
         newTime = zero.add(Duration(minutes: users[0].time));
+        todoName = users[0].name;
       }
     });
   }
