@@ -117,14 +117,17 @@ class _CountdownPageState extends State<CountdownPage> {
           (() {
             // your code here
             if (!started) {
+              print("not running");
               //first time -> start
               if (first) {
                 return _button(
                     icon: Icon(Icons.play_circle_fill),
                     title: "Start",
                     onPressed: () {
-                      started = !started;
-                      first = !first;
+                      setState(() {
+                        started = !started;
+                        first = !first;
+                      });
                       _controller.start();
                     });
               } else {
@@ -133,16 +136,21 @@ class _CountdownPageState extends State<CountdownPage> {
                     icon: Icon(Icons.play_circle_fill),
                     title: "Resume",
                     onPressed: () {
-                      started = !started;
+                      setState(() {
+                        started = !started;
+                      });
                       _controller.resume();
                     });
               }
             } else {
+              print("pause");
               return _button(
                   icon: Icon(Icons.pause_circle_filled),
                   title: "Pause",
                   onPressed: () {
-                    started = !started;
+                    setState(() {
+                      started = !started;
+                    });
                     _controller.pause();
                   });
             }
@@ -152,10 +160,11 @@ class _CountdownPageState extends State<CountdownPage> {
     );
   }
 
-  _button(
+  Widget _button(
       {required String title, VoidCallback? onPressed, required Icon icon}) {
     return Expanded(
         child: IconButton(
+      iconSize: 140,
       icon: icon,
       onPressed: onPressed,
       color: Colors.green,
