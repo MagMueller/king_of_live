@@ -64,7 +64,7 @@ class _FirstScreenState extends State<FirstScreen> {
             //crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               const SizedBox(
-                height: 10,
+                height: 60,
               ),
               SizedBox(
                   //decoration: BoxDecoration(border: Border.all(color: Colors.blue)),
@@ -90,14 +90,44 @@ class _FirstScreenState extends State<FirstScreen> {
               const SizedBox(
                 height: 70,
               ),
-              buildCustomButton(context, "My Day", const DragAndDropCalendar()),
-              buildCustomButton(context, "My Priorities", const PrioPage()),
-              //buildCustomButton(context, "Timer", CountdownPage(title: "Countdown",)),
-              buildCustomButton(context, "Timer", TimerTaskSelectionPage()),
-              const SizedBox(
-                height: 70,
+              Container(
+                width: 350,
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  border: Border.all(width: 9.0),
+                  borderRadius: BorderRadius.all(Radius.circular(
+                          50.0) //                 <--- border radius here
+                      ),
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        buildCustomButton(context, const PrioPage(),
+                            Icons.playlist_add_rounded),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        buildCustomButton(context, const DragAndDropCalendar(),
+                            Icons.calendar_today_rounded),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        buildCustomButton(
+                            context, TimerTaskSelectionPage(), Icons.timer),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        buildCustomButton(
+                            context, const CompletedPage(), Icons.done_outline),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              buildCustomButton(context, "Completed", const CompletedPage()),
             ],
           ),
         ),
@@ -106,16 +136,14 @@ class _FirstScreenState extends State<FirstScreen> {
   }
 
   SizedBox buildCustomButton(
-      BuildContext context, String name, dynamic nextPage) {
+      BuildContext context, dynamic nextPage, IconData icon) {
     return SizedBox(
-      height: 80,
+      height: 120,
       child: FittedBox(
         fit: BoxFit.fitHeight,
-        child: ElevatedButton(
-          child: Text(
-            name,
-            style: const TextStyle(fontSize: 30),
-          ),
+        child: IconButton(
+          icon: Icon(icon),
+          iconSize: 80,
           onPressed: () {
             Navigator.push(
               context,
