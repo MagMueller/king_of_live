@@ -5,8 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'prio.dart';
 import 'package:flutter/material.dart';
 import '../model/items.dart';
-import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
-import 'dart:io';
 
 import 'first_page.dart';
 import 'timerTimeSelectionPage.dart';
@@ -24,7 +22,7 @@ class _TimerTaskSelectionPageState extends State<TimerTaskSelectionPage> {
   //DateTime _today = DateTime.now();
   //DateTime zero = DateTime(0, 0, 0, 0, 0);
   DateTime zero = DateTime(0, 0, 0, 0, 0); //DateTime.now();
-  DateTime _dateTimeStandard = DateTime(0, 0, 0, 0, 30);
+  final DateTime _dateTimeStandard = DateTime(0, 0, 0, 0, 30);
   late DateTime newTime;
 
   //int lastSelected = 0;
@@ -99,17 +97,17 @@ class _TimerTaskSelectionPageState extends State<TimerTaskSelectionPage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => FirstScreen()),
+                        MaterialPageRoute(builder: (context) => const FirstScreen()),
                       );
                     },
-                    icon: Icon(Icons.navigate_before_rounded)),
+                    icon: const Icon(Icons.navigate_before_rounded)),
               ),
 
               Container(
                 decoration: roundBoxDeco(),
                 child: IconButton(
                     onPressed: () {
-                      print("newTime: " + newTime.toString());
+                      //print("newTime: " + newTime.toString());
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -118,7 +116,7 @@ class _TimerTaskSelectionPageState extends State<TimerTaskSelectionPage> {
                         ),
                       );
                     },
-                    icon: Icon(Icons.navigate_next_rounded)),
+                    icon: const Icon(Icons.navigate_next_rounded)),
               ),
             ],
           ),
@@ -158,7 +156,7 @@ class _TimerTaskSelectionPageState extends State<TimerTaskSelectionPage> {
                   0)
                   .add(Duration(minutes: users[index].time));
 
-              print("newTime:" + newTime.toString());
+              //print("newTime:" + newTime.toString());
               // .add(Duration(minutes: users[index].time));
             }
           }),
@@ -236,7 +234,7 @@ class _TimerTaskSelectionPageState extends State<TimerTaskSelectionPage> {
     setState(() {
       users = userList;
 
-      if (users.length > 0) {
+      if (users.isNotEmpty) {
         newTime = zero.add(Duration(minutes: users[0].time));
         todoName = users[0].name;
       }
@@ -275,7 +273,7 @@ BoxDecoration roundBoxDeco() {
   return BoxDecoration(
     color: Colors.blue,
     border: Border.all(width: 9.0),
-    borderRadius: BorderRadius.all(
+    borderRadius: const BorderRadius.all(
         Radius.circular(30.0) //                 <--- border radius here
     ),
   );

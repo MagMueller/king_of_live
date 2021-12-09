@@ -11,8 +11,8 @@ class SelectDropList extends StatefulWidget {
   final Function(OptionItem optionItem) onOptionSelected;
 
 
-  SelectDropList(
-      this.onOptionSelected);
+  const SelectDropList(
+      this.onOptionSelected,{Key? key}) : super(key: key);
 
   @override
   _SelectDropListState createState() =>
@@ -37,14 +37,14 @@ class _SelectDropListState extends State<SelectDropList>
     super.initState();
     loadItems().whenComplete(() {
       setState(() {
-        this.dropListModel = getOptionItems(users);
-        print(this.dropListModel.listOptionItems.length);
+        dropListModel = getOptionItems(users);
+        //print(this.dropListModel.listOptionItems.length);
       });
     });
 
     optionItemSelected = OptionItem(id: "0", title: "Choose item");
     expandController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 350));
+        AnimationController(vsync: this, duration: const Duration(milliseconds: 350));
     animation = CurvedAnimation(
       parent: expandController,
       curve: Curves.fastOutSlowIn,
@@ -68,76 +68,74 @@ class _SelectDropListState extends State<SelectDropList>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: <Widget>[
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 17),
-            decoration: new BoxDecoration(
-              borderRadius: BorderRadius.circular(20.0),
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                    blurRadius: 10, color: Colors.black26, offset: Offset(0, 2))
-              ],
-            ),
-            child: new Row(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Icon(
-                  Icons.card_travel,
-                  color: Color(0xFF307DF1),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Expanded(
-                    child: GestureDetector(
-                  onTap: () {
-                    this.isShow = !this.isShow;
-                    _runExpandCheck();
-                    setState(() {});
-                  },
-                  child: Text(
-                    optionItemSelected.title!,
-                    style: TextStyle(color: Color(0xFF307DF1), fontSize: 16),
-                  ),
-                )),
-                Align(
-                  alignment: Alignment(1, 0),
-                  child: Icon(
-                    isShow ? Icons.arrow_drop_down : Icons.arrow_right,
-                    color: Color(0xFF307DF1),
-                    size: 15,
-                  ),
-                ),
-              ],
-            ),
+    return Column(
+      children: <Widget>[
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 17),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.0),
+            color: Colors.white,
+            boxShadow: const [
+              BoxShadow(
+                  blurRadius: 10, color: Colors.black26, offset: Offset(0, 2))
+            ],
           ),
-          SizeTransition(
-              axisAlignment: 1.0,
-              sizeFactor: animation,
-              child: Container(
-                  margin: const EdgeInsets.only(bottom: 10),
-                  padding: const EdgeInsets.only(bottom: 10),
-                  decoration: new BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(20),
-                        bottomRight: Radius.circular(20)),
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                          blurRadius: 4,
-                          color: Colors.black26,
-                          offset: Offset(0, 4))
-                    ],
-                  ),
-                  child: _buildDropListOptions(
-                      dropListModel.listOptionItems, context))),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              const Icon(
+                Icons.card_travel,
+                color: Color(0xFF307DF1),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                  child: GestureDetector(
+                onTap: () {
+                  isShow = !isShow;
+                  _runExpandCheck();
+                  setState(() {});
+                },
+                child: Text(
+                  optionItemSelected.title!,
+                  style: const TextStyle(color: Color(0xFF307DF1), fontSize: 16),
+                ),
+              )),
+              Align(
+                alignment: const Alignment(1, 0),
+                child: Icon(
+                  isShow ? Icons.arrow_drop_down : Icons.arrow_right,
+                  color: const Color(0xFF307DF1),
+                  size: 15,
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizeTransition(
+            axisAlignment: 1.0,
+            sizeFactor: animation,
+            child: Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.only(bottom: 10),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(20),
+                      bottomRight: Radius.circular(20)),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                        blurRadius: 4,
+                        color: Colors.black26,
+                        offset: Offset(0, 4))
+                  ],
+                ),
+                child: _buildDropListOptions(
+                    dropListModel.listOptionItems, context))),
 //          Divider(color: Colors.grey.shade300, height: 1,)
-        ],
-      ),
+      ],
     );
   }
 
@@ -162,7 +160,7 @@ class _SelectDropListState extends State<SelectDropList>
                       top: BorderSide(color: Colors.grey[200]!, width: 1)),
                 ),
                 child: Text(item.title!,
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: Color(0xFF307DF1),
                         fontWeight: FontWeight.w400,
                         fontSize: 14),
@@ -174,7 +172,7 @@ class _SelectDropListState extends State<SelectDropList>
           ],
         ),
         onTap: () {
-          this.optionItemSelected = item;
+          optionItemSelected = item;
           isShow = false;
           expandController.reverse();
           widget.onOptionSelected(item);
@@ -190,9 +188,9 @@ class _SelectDropListState extends State<SelectDropList>
 
     for (int i = 0; i < users.length; i++) {
       myItems.add(OptionItem(id: (i + 1).toString(), title: users[i].name));
-      print(users[i].name);
+      //print(users[i].name);
     }
-    print(myItems);
+    //print(myItems);
     return DropListModel(myItems);
   }
 

@@ -4,18 +4,18 @@ import 'dart:convert';
 import 'package:king_of_live/pages/timerTaskSelectionPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'countdown.dart';
-import 'prio.dart';
+
 import 'package:flutter/material.dart';
 import '../model/items.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
-import 'dart:io';
+
 import 'timerTaskSelectionPage.dart';
 
 class TimerSelectionPage extends StatefulWidget {
-  DateTime? time;
-  String? title;
+  final DateTime? time;
+  final String? title;
 
-  TimerSelectionPage({this.time, Key? key, this.title}) : super(key: key);
+  const TimerSelectionPage({this.time, Key? key, this.title}) : super(key: key);
 
   @override
   State<TimerSelectionPage> createState() => _TimerSelectionPageState();
@@ -26,8 +26,8 @@ class _TimerSelectionPageState extends State<TimerSelectionPage> {
 
   //DateTime _today = DateTime.now();
   DateTime zero = DateTime(0, 0, 0, 0, 0);
-  DateTime _dateTime = DateTime(0, 0, 0, 0, 0); //DateTime.now();
-  DateTime _dateTimeStandard = DateTime(0, 0, 0, 0, 30);
+
+
   late DateTime newTime;
 
   int lastSelected = 0;
@@ -61,15 +61,14 @@ class _TimerSelectionPageState extends State<TimerSelectionPage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 //crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Container(
-                child: Text(
-                  widget.title!,
-                  style: TextStyle(fontSize: 25),
-                ),
+
+              Text(
+                widget.title!,
+                style: const TextStyle(fontSize: 25),
               ),
               //SizedBox(height: 30,),
               Center(
-                child: Container(
+                child: SizedBox(
                     height: 200,
                     child:
                         Center(child: buildTimePickerSpinner(newTime, "first"))
@@ -91,16 +90,16 @@ class _TimerSelectionPageState extends State<TimerSelectionPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => TimerTaskSelectionPage()),
+                            builder: (context) => const TimerTaskSelectionPage()),
                       );
                     },
-                    icon: Icon(Icons.navigate_before_rounded)),
+                    icon: const Icon(Icons.navigate_before_rounded)),
               ),
               Container(
                 decoration: roundBoxDeco(),
                 child: IconButton(
                     onPressed: () {
-                      print("to countdownd" + newTime.toString());
+                      //print("to countdownd" + newTime.toString());
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -110,7 +109,7 @@ class _TimerSelectionPageState extends State<TimerSelectionPage> {
                                 )),
                       );
                     },
-                    icon: Icon(Icons.navigate_next_rounded)),
+                    icon: const Icon(Icons.navigate_next_rounded)),
               ),
             ],
           ),
@@ -118,10 +117,10 @@ class _TimerSelectionPageState extends State<TimerSelectionPage> {
       );
 
   Widget buildTimePickerSpinner(DateTime dateTime, String s) {
-    print(s + dateTime.toString());
+    //print(s + dateTime.toString());
     setState(() {
       //lastSelected = isSelected;
-      print(lastSelected.toString());
+      //print(lastSelected.toString());
     });
     return TimePickerSpinner(
       isShowSeconds: false,
@@ -132,7 +131,7 @@ class _TimerSelectionPageState extends State<TimerSelectionPage> {
       //alignment: Alignment.center,
       time: dateTime,
       minutesInterval: 5,
-      highlightedTextStyle: TextStyle(color: Colors.white, fontSize: 40),
+      highlightedTextStyle: const TextStyle(color: Colors.white, fontSize: 40),
       normalTextStyle:
           TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 40),
       onTimeChange: (hh) {
@@ -176,7 +175,7 @@ class _TimerSelectionPageState extends State<TimerSelectionPage> {
     return BoxDecoration(
       color: Colors.blue,
       border: Border.all(width: 9.0),
-      borderRadius: BorderRadius.all(
+      borderRadius: const BorderRadius.all(
           Radius.circular(30.0) //                 <--- border radius here
           ),
     );

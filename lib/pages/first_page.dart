@@ -5,8 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../pages/prio.dart';
 import '../pages/settings.dart';
 import '../pages/completedPage.dart';
-import '../pages/timerTaskSelectorPage.dart';
-import 'countdown.dart';
+
 
 class FirstScreen extends StatefulWidget {
   const FirstScreen({Key? key}) : super(key: key);
@@ -95,7 +94,7 @@ class _FirstScreenState extends State<FirstScreen> {
                 decoration: BoxDecoration(
                   color: Colors.blue,
                   border: Border.all(width: 9.0),
-                  borderRadius: BorderRadius.all(Radius.circular(
+                  borderRadius: const BorderRadius.all(Radius.circular(
                           50.0) //                 <--- border radius here
                       ),
                 ),
@@ -106,7 +105,7 @@ class _FirstScreenState extends State<FirstScreen> {
                       children: [
                         buildCustomButton(context, const PrioPage(),
                             Icons.playlist_add_rounded),
-                        SizedBox(
+                        const SizedBox(
                           width: 20,
                         ),
                         buildCustomButton(context, const DragAndDropCalendar(),
@@ -117,8 +116,8 @@ class _FirstScreenState extends State<FirstScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         buildCustomButton(
-                            context, TimerTaskSelectionPage(), Icons.timer),
-                        SizedBox(
+                            context, const TimerTaskSelectionPage(), Icons.timer),
+                        const SizedBox(
                           width: 20,
                         ),
                         buildCustomButton(

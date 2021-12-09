@@ -82,14 +82,14 @@ class _CompletedPageState extends State<CompletedPage> {
 
   showAlertDialog(BuildContext context) {
     // set up the buttons
-    Widget cancelButton = FlatButton(
-      child: Text("Cancel"),
+    Widget cancelButton = TextButton(
+      child: const Text("Cancel"),
       onPressed: () {
         Navigator.of(context).pop();
       },
     );
-    Widget continueButton = FlatButton(
-      child: Text("Yes"),
+    Widget continueButton = TextButton(
+      child: const Text("Yes"),
 
       /// delete all completed items
       onPressed: () {
@@ -102,8 +102,8 @@ class _CompletedPageState extends State<CompletedPage> {
     );
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("Delete all completed Todos"),
-      content: Text("Do you really want to delete all the finished todos?"),
+      title: const Text("Delete all completed Todos"),
+      content: const Text("Do you really want to delete all the finished todos?"),
       actions: [
         cancelButton,
         continueButton,

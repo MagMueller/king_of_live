@@ -346,7 +346,21 @@ class _PrioPageState extends State<PrioPage> {
               ),
               actions: <Widget>[
                 TextButton(
-                  child: Text('Daily Habbit',
+                    child: const Text(
+                      'Next',
+                    ),
+                    onPressed: () {
+                      _addTodoItem(
+                          _textFieldController.text, currentPrio, isARoutine);
+                      Navigator.of(context).pop();
+                      _textFieldController.text = "";
+                      _addNewItem();
+                    }),
+                const SizedBox(
+                  width: 10,
+                ),
+                TextButton(
+                  child: Text('Habbit',
                       style: TextStyle(
                           color: isARoutine
                               ? Colors.black
@@ -357,8 +371,8 @@ class _PrioPageState extends State<PrioPage> {
                     })
                   },
                 ),
-                SizedBox(
-                  width: 20,
+                const SizedBox(
+                  width: 10,
                 ),
                 ElevatedButton(
                   style: ButtonStyle(

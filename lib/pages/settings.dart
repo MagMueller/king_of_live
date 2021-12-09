@@ -76,11 +76,11 @@ class _SettingsRouteState extends State<SettingsRoute> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Text(
+                  const Text(
                     "Magnus Müller",
                     style: TextStyle(fontSize: 30),
                   ),
-                  Text(
+                  const Text(
                     "Thank you for using my app.\n\nPlease contact me for any feedback.\nThank you for helping me to improve and optimize the app. A Google Play review or donation would help me immensely. Also check my other social media channels.",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 20),
@@ -90,7 +90,7 @@ class _SettingsRouteState extends State<SettingsRoute> {
                     children: [
                       IconButton(
                           iconSize: 100.0,
-                          icon: FaIcon(
+                          icon: const FaIcon(
                             FontAwesomeIcons.paypal,
                           ),
                           onPressed: () async {
@@ -98,17 +98,17 @@ class _SettingsRouteState extends State<SettingsRoute> {
                                 'https://www.paypal.com/paypalme/stormysix6/10';
                             launch(url);
                           }),
-                      SizedBox(
+                      const SizedBox(
                         width: 20,
                       ),
                       Column(
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                           ),
                           IconButton(
                               iconSize: 100.0,
-                              icon: FaIcon(
+                              icon: const FaIcon(
                                 FontAwesomeIcons.googlePlay,
                               ),
                               onPressed: () async {
@@ -125,7 +125,7 @@ class _SettingsRouteState extends State<SettingsRoute> {
                     children: [
                       IconButton(
                           iconSize: 70.0,
-                          icon: FaIcon(
+                          icon: const FaIcon(
                             FontAwesomeIcons.youtubeSquare,
                           ),
                           onPressed: () async {
@@ -135,7 +135,7 @@ class _SettingsRouteState extends State<SettingsRoute> {
                           }),
                       IconButton(
                           iconSize: 70.0,
-                          icon: FaIcon(
+                          icon: const FaIcon(
                             FontAwesomeIcons.tiktok,
                           ),
                           onPressed: () async {
@@ -144,7 +144,7 @@ class _SettingsRouteState extends State<SettingsRoute> {
                           }),
                       IconButton(
                           iconSize: 70.0,
-                          icon: FaIcon(
+                          icon: const FaIcon(
                             FontAwesomeIcons.instagram,
                           ),
                           onPressed: () async {
@@ -154,7 +154,7 @@ class _SettingsRouteState extends State<SettingsRoute> {
                           }),
                       IconButton(
                           iconSize: 70.0,
-                          icon: FaIcon(
+                          icon: const FaIcon(
                             FontAwesomeIcons.mailBulk,
                           ),
                           onPressed: () async {
